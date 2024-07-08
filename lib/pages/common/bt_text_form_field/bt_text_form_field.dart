@@ -53,7 +53,6 @@ class BTTextFormField extends StatelessWidget {
       obscureText: obscureText,
       onChanged: (value) {
         if (onChanged == null) return;
-        // onChanged!(convertStringToType<T>(value));
         onChanged!(value);
       },
       validator: (value) {
@@ -62,39 +61,12 @@ class BTTextFormField extends StatelessWidget {
         }
         if (validator == null) return null;
         if (value == null) return validator!(null);
-        // isEmptyValidation ? validator!(value! as T) : validator!(value as T?);
-        // return validator!(convertStringToType<T>(value!));
         return validator!(value);
       },
       minLines: minLines,
       maxLines: obscureText ? 1 : maxLines,
     );
   }
-
-//   InputDecoration decoration() {
-//     return InputDecoration(
-//       border: const OutlineInputBorder(),
-//       filled: true,
-//       fillColor: Colors.white,
-//       contentPadding: prefixIcon == null
-//           ? const EdgeInsets.all(10.0)
-//           : const EdgeInsets.symmetric(vertical: 2),
-//       prefixIcon: prefixIcon == null
-//           ? null
-//           : Icon(
-//               prefixIcon,
-//               color: Colors.blueAccent,
-//               size: 20,
-//             ),
-//       focusedBorder: const OutlineInputBorder(
-//         borderSide: BorderSide(color: Colors.grey, width: 1.0),
-//       ),
-//       enabledBorder: const OutlineInputBorder(
-//         borderSide: BorderSide(color: Colors.grey, width: 1.0),
-//       ),
-//       hintText: hintText,
-//     );
-//   }
 }
 
 T convertStringToType<T>(String value) {

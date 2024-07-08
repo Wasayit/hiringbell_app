@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart';
 import 'package:hiringbell/models/constants.dart';
 import 'package:hiringbell/models/user.dart';
 import 'package:jiffy/jiffy.dart';
@@ -202,8 +201,8 @@ class Util {
           ),
         ),
         imageBuilder: (context, imageProvider) => Container(
-          width: 150.0,
-          height: 150.0,
+          width: MediaQuery.of(context).size.width,
+          // height: 250.0,
           decoration: BoxDecoration(
             image: DecorationImage(
               image: imageProvider,
@@ -254,6 +253,53 @@ class Util {
     }
 
     return image;
+  }
+
+  static TextStyle getLabelHeaderStyle() {
+    return const TextStyle(
+      fontSize: Constants.fontSize * 1.2,
+      fontWeight: FontWeight.w500,
+    );
+  }
+
+  static EdgeInsets getPagePadding() {
+    return const EdgeInsets.symmetric(
+      horizontal: Constants.pagePadding,
+      vertical: Constants.pagePadding,
+    );
+  }
+
+  static InputDecoration getTextFieldDecoration({ required String placeholder, Widget? leadingIcon, Widget? trailingIcon }) {
+    return InputDecoration(
+      prefixIcon: leadingIcon,
+      suffixIcon: trailingIcon,
+      border: UnderlineInputBorder(
+        borderSide: BorderSide(
+          color: Colors.grey.shade400,
+        ),
+      ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(
+          color: Colors.grey.shade400,
+        ), // Change the color to your desired color
+      ),
+      enabledBorder: UnderlineInputBorder(
+        borderSide: BorderSide(
+          color: Colors.grey.shade400,
+        ), // Change the color to your desired color
+      ),
+      labelText: placeholder,
+      labelStyle: const TextStyle(
+        color: Colors.grey,
+      ), // Change label text color
+    );
+  }
+
+  static delayScreen(int sec) async {
+    await Future.delayed(
+      Duration(seconds: sec),
+      () {},
+    );
   }
 
   Util._internal();

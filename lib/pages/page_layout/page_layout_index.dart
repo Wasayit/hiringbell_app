@@ -47,9 +47,16 @@ class _PageLayoutIndexState extends State<PageLayoutIndex> {
           children: [
             Expanded(
               flex: 2,
-              child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 2),
-                child: PopupMenuButton(
+              child: IconButton(
+                onPressed: (){
+                  Get.toNamed(Navigate.profile);
+                },
+                icon: CircleAvatar(
+                  radius: 23.0,
+                  backgroundColor: Colors.grey.shade300,
+                  child: Text(controller.user.firstName[0]),
+                ),
+                /*child: PopupMenuButton(
                   icon: CircleAvatar(
                     radius: 23.0,
                     backgroundColor: Colors.grey.shade300,
@@ -85,7 +92,7 @@ class _PageLayoutIndexState extends State<PageLayoutIndex> {
                       return;
                     }
                   },
-                ),
+                ),*/
               ),
             ),
             const Expanded(

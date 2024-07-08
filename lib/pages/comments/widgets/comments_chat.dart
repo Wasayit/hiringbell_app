@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hiringbell/pages/comments/comments_controller.dart';
-import 'package:hiringbell/pages/comments/widgets/chat_messages.dart';
 import 'package:hiringbell/pages/comments/widgets/comments_heading.dart';
 import 'package:hiringbell/pages/comments/widgets/post_info.dart';
 
@@ -16,7 +15,6 @@ class CommentsChat extends GetView<CommentsController> {
       children: const [
         PostInfo(),
         CommentsHeading(),
-        ChatMessages(),
       ],
     );
   }

@@ -18,8 +18,8 @@ InputDecoration btInputDecoration({
             color: Colors.blueAccent,
             size: 20,
           ),
-    focusedBorder: const OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.grey, width: 1.0),
+    focusedBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: Colors.grey.shade300, width: 1.0),
     ),
     enabledBorder: const OutlineInputBorder(
       borderSide: BorderSide(color: Colors.grey, width: 1.0),

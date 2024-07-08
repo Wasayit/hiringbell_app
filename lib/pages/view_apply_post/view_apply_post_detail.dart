@@ -27,7 +27,7 @@ class _ViewApplyPostDetailState extends State<ViewApplyPostDetail> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      onPopInvokedWithResult: (canPop, result) async {
+      onPopInvoked: (canPop) async {
         if (canPop) {
           home.setAppliedExecutedState(controller.jobStatus);
         }

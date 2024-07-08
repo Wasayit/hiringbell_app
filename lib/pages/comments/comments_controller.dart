@@ -5,21 +5,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sound_record/flutter_sound_record.dart';
 import 'package:get/get.dart';
 import 'package:hiringbell/models/constants.dart';
+import 'package:hiringbell/models/user.dart';
+import 'package:hiringbell/pages/common/realtime_communication/chat_stream_service.dart';
 import 'package:hiringbell/services/http_service.dart';
 import 'package:hiringbell/utilities/Util.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'model/message_type.dart';
+
 class CommentsController extends GetxController {
   int postId = Get.arguments as int;
-  HttpService http = HttpService.getInstance();
+  HttpService httpService = HttpService.getInstance();
   Util util = Util.getInstance();
+  User? user;
   var isLoading = false.obs;
   var isRecordPlaying = false.obs;
   final ScrollController scrollController = ScrollController();
-
-  var chatMessage = RxList<MessageDetail>([]).obs;
   int counter = 0;
 
   var isRecording = false.obs;
@@ -30,8 +33,17 @@ class CommentsController extends GetxController {
   Amplitude? amplitude;
   int recordDuration = 0;
   var fileDuration = "00:00".obs;
+  String commentChatId = Constants.empty;
 
   final TextEditingController messageController = TextEditingController();
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    user = util.getUserDetail();
+    initRecorder();
+  }
 
   Future<String> getTemporaryDirPath() async {
     Directory tempDir = await getTemporaryDirectory();
@@ -106,39 +118,13 @@ class CommentsController extends GetxController {
 
   Future sendAudioMessage() async {
     if (recordedFilePath.isNotEmpty) {
-      chatMessage.value.add(MessageDetail(
+      /*chatMessage.value.add(RequestMessage(
         message: "Message count: ${++counter}",
-        isAudioMessage: true,
-      ));
+        messageType: MessageType.audio,
+      ));*/
       util.showToast("Please record or type a message first");
     }
+
     _scrollBottom();
   }
-
-  Future sendMessage() async {
-    if (recordedFilePath.isNotEmpty) {
-      chatMessage.value.add(MessageDetail(
-        message: "Message count: ${++counter}",
-      ));
-      util.showToast("Please record or type a message first");
-    }
-    _scrollBottom();
-  }
-
-  @override
-  void onInit() {
-    // TODO: implement onInit
-    super.onInit();
-    initRecorder();
-  }
-}
-
-class MessageDetail {
-  bool isAudioMessage = false;
-  String message;
-
-  MessageDetail({
-    required this.message,
-    this.isAudioMessage = false,
-  });
 }

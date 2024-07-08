@@ -63,6 +63,8 @@ class LoginController extends GetxController {
       } catch (e) {
         isSubmitted(false);
       }
+    } else {
+      isSubmitted(false);
     }
   }
 
@@ -138,11 +140,9 @@ class LoginController extends GetxController {
     isSubmitted = false.obs;
     user = util.getUserDetail();
 
-    usernameController.text = "istiyaq.4game@gmail.com";
-    passwordController.text = "Hiring_Bell@bot@9100@bottomHalf";
-    /*usernameController.text = "test2@gmail.com";
-    passwordController.text = "123456";*/
-    // usernameController.text = "bottomhalf.dev@gmail.com";
-    // passwordController.text = "Hiring_Bell@bot@9100@bottomHalf";
+    if (!Constants.isProduction) {
+      usernameController.text = "istiyaq.4game@gmail.com";
+      passwordController.text = "12345678";
+    }
   }
 }

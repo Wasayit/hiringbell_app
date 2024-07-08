@@ -17,7 +17,7 @@ class HttpService extends GetConnect {
   String? _token;
 
   HttpService._internal() {
-    _initialized(isProdMode: false);
+    _initialized(isProdMode: Constants.isProduction);
   }
 
   String get token => _token ?? "";
