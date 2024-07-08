@@ -6,9 +6,9 @@ import 'package:get/get.dart';
 import 'package:hiringbell/models/constants.dart';
 import 'package:hiringbell/models/country.dart';
 import 'package:hiringbell/models/currency.dart';
+import 'package:hiringbell/models/dropdown_items.dart';
 import 'package:hiringbell/models/files.dart';
 import 'package:hiringbell/models/job_type.dart';
-import 'package:hiringbell/models/key_value_items.dart';
 import 'package:hiringbell/models/post_job.dart';
 import 'package:hiringbell/models/posts.dart';
 import 'package:hiringbell/pages/common/bt_select/form_util.dart';
@@ -51,14 +51,14 @@ class JobPostController extends GetxController {
   List<Currency> listCurrency = [];
   List<Country> listCountry = [];
 
-  List<KeyValuePair> listMedicalInsurance = [
-    KeyValuePair(text: 'By company', value: 1),
-    KeyValuePair(text: 'No insurance', value: 2),
+  List<DropdownItems> listMedicalInsurance = [
+    DropdownItems(text: 'By company', value: 1),
+    DropdownItems(text: 'No insurance', value: 2),
   ];
 
-  List<KeyValuePair> listVisaType = [
-    KeyValuePair(text: 'Tourist', value: 1),
-    KeyValuePair(text: 'Employment', value: 2),
+  List<DropdownItems> listVisaType = [
+    DropdownItems(text: 'Tourist', value: 1),
+    DropdownItems(text: 'Employment', value: 2),
   ];
 
   List<int> listMinAge = Util.genSequence(18, 45);
@@ -185,14 +185,14 @@ class JobPostController extends GetxController {
     debugPrint('days Monday :=> ${jobPost.isMon}');
   }
 
-  var days = <KeyValuePair>[
-    KeyValuePair(text: 'Sunday', value: 1),
-    KeyValuePair(text: 'Monday', value: 2),
-    KeyValuePair(text: 'Tuesday', value: 3),
-    KeyValuePair(text: 'Wednesday', value: 4),
-    KeyValuePair(text: 'Thursday', value: 5),
-    KeyValuePair(text: 'Friday', value: 6),
-    KeyValuePair(text: 'Saturday', value: 7),
+  var days = <DropdownItems>[
+    DropdownItems(text: 'Sunday', value: 1),
+    DropdownItems(text: 'Monday', value: 2),
+    DropdownItems(text: 'Tuesday', value: 3),
+    DropdownItems(text: 'Wednesday', value: 4),
+    DropdownItems(text: 'Thursday', value: 5),
+    DropdownItems(text: 'Friday', value: 6),
+    DropdownItems(text: 'Saturday', value: 7),
   ];
 
   Future<void> loadFormData(int userPostId) async {
@@ -334,23 +334,23 @@ class JobPostController extends GetxController {
             });
   }
 
-  List<KeyValuePair> categories = <KeyValuePair>[
-    KeyValuePair(text: 'Driver', value: 1),
-    KeyValuePair(text: 'Electrician', value: 2),
-    KeyValuePair(text: 'Mechanical Fitter', value: 3),
+  List<DropdownItems> categories = <DropdownItems>[
+    DropdownItems(text: 'Driver', value: 1),
+    DropdownItems(text: 'Electrician', value: 2),
+    DropdownItems(text: 'Mechanical Fitter', value: 3),
   ];
 
-  List<KeyValuePair> countries = <KeyValuePair>[
-    KeyValuePair(text: 'India', value: 1),
-    KeyValuePair(text: 'UAE', value: 2),
-    KeyValuePair(text: 'Qatar', value: 3),
+  List<DropdownItems> countries = <DropdownItems>[
+    DropdownItems(text: 'India', value: 1),
+    DropdownItems(text: 'UAE', value: 2),
+    DropdownItems(text: 'Qatar', value: 3),
   ];
 
   List<int> generateRandomNumber({int range = 50}) {
     return List.generate(range, (i) => i + 1);
   }
 
-  void onItemSelected(KeyValuePair value) {
+  void onItemSelected(DropdownItems value) {
     debugPrint("$value");
   }
 

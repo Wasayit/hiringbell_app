@@ -6,7 +6,7 @@ import 'package:hiringbell/models/country.dart';
 import 'package:hiringbell/models/education.dart';
 import 'package:hiringbell/models/files.dart';
 import 'package:hiringbell/models/job_type.dart';
-import 'package:hiringbell/models/key_value_items.dart';
+import 'package:hiringbell/models/dropdown_items.dart';
 import 'package:hiringbell/models/language.dart';
 import 'package:hiringbell/models/religion.dart';
 import 'package:hiringbell/models/user_document.dart';
@@ -47,72 +47,72 @@ class ClientRegistrationController extends GetxController {
   List<Education> listEducation = [];
   List<Language> listLanguage = [];
 
-  List<KeyValuePair<String>> listGender = [
-    KeyValuePair(text: 'Male', value: 'm'),
-    KeyValuePair(text: 'Female', value: 'f'),
-    KeyValuePair(text: 'Other', value: 'o'),
+  List<DropdownItems<String>> listGender = [
+    DropdownItems(text: 'Male', value: 'm'),
+    DropdownItems(text: 'Female', value: 'f'),
+    DropdownItems(text: 'Other', value: 'o'),
   ];
 
-  List<KeyValuePair<bool>> listYesNo = [
-    KeyValuePair(text: 'Yes', value: true),
-    KeyValuePair(text: 'No', value: false),
+  List<DropdownItems<bool>> listYesNo = [
+    DropdownItems(text: 'Yes', value: true),
+    DropdownItems(text: 'No', value: false),
   ];
 
-  // List<KeyValuePair<int>> listReligion = [
-  //   KeyValuePair(text: 'Christianity', value: 1),
-  //   KeyValuePair(text: 'Islam', value: 2),
-  //   KeyValuePair(text: 'Hinduism', value: 3),
-  //   KeyValuePair(text: 'Buddhism', value: 4),
-  //   KeyValuePair(text: 'Judaism', value: 5),
-  //   KeyValuePair(text: 'Other', value: 6),
+  // List<DropdownItems<int>> listReligion = [
+  //   DropdownItems(text: 'Christianity', value: 1),
+  //   DropdownItems(text: 'Islam', value: 2),
+  //   DropdownItems(text: 'Hinduism', value: 3),
+  //   DropdownItems(text: 'Buddhism', value: 4),
+  //   DropdownItems(text: 'Judaism', value: 5),
+  //   DropdownItems(text: 'Other', value: 6),
   // ];
 
-  // List<KeyValuePair<int>> listEducation = [
-  //   KeyValuePair(text: 'High School', value: 1),
-  //   KeyValuePair(text: 'Diploma', value: 2),
-  //   KeyValuePair(text: 'Undergraduate', value: 3),
-  //   KeyValuePair(text: 'Graduate', value: 4),
-  //   KeyValuePair(text: 'Post Graduate', value: 5),
-  //   KeyValuePair(text: 'Doctorate', value: 6),
+  // List<DropdownItems<int>> listEducation = [
+  //   DropdownItems(text: 'High School', value: 1),
+  //   DropdownItems(text: 'Diploma', value: 2),
+  //   DropdownItems(text: 'Undergraduate', value: 3),
+  //   DropdownItems(text: 'Graduate', value: 4),
+  //   DropdownItems(text: 'Post Graduate', value: 5),
+  //   DropdownItems(text: 'Doctorate', value: 6),
   // ];
 
-  // final List<KeyValuePair<int>> listCountry = [
-  //   KeyValuePair(value: 1, text: 'India'),
-  //   KeyValuePair(value: 2, text: 'United States'),
-  //   KeyValuePair(value: 3, text: 'China'),
-  //   KeyValuePair(value: 4, text: 'Brazil'),
-  //   KeyValuePair(value: 5, text: 'Russia'),
-  //   KeyValuePair(value: 6, text: 'Japan'),
-  //   KeyValuePair(value: 7, text: 'Germany'),
-  //   KeyValuePair(value: 8, text: 'France'),
-  //   KeyValuePair(value: 9, text: 'United Kingdom'),
-  //   KeyValuePair(value: 10, text: 'Australia'),
+  // final List<DropdownItems<int>> listCountry = [
+  //   DropdownItems(value: 1, text: 'India'),
+  //   DropdownItems(value: 2, text: 'United States'),
+  //   DropdownItems(value: 3, text: 'China'),
+  //   DropdownItems(value: 4, text: 'Brazil'),
+  //   DropdownItems(value: 5, text: 'Russia'),
+  //   DropdownItems(value: 6, text: 'Japan'),
+  //   DropdownItems(value: 7, text: 'Germany'),
+  //   DropdownItems(value: 8, text: 'France'),
+  //   DropdownItems(value: 9, text: 'United Kingdom'),
+  //   DropdownItems(value: 10, text: 'Australia'),
   // ];
 
-  final List<KeyValuePair<int>> listStates = [
-    KeyValuePair(value: 1, text: 'Telangana'),
-    KeyValuePair(value: 2, text: 'Karnataka'),
-    KeyValuePair(value: 3, text: 'Andhra Pradesh'),
-    KeyValuePair(value: 4, text: 'Tamil Nadu'),
-    KeyValuePair(value: 5, text: 'Maharashtra'),
-    KeyValuePair(value: 6, text: 'Kerala'),
-    KeyValuePair(value: 7, text: 'Gujarat'),
-    KeyValuePair(value: 8, text: 'Rajasthan'),
-    KeyValuePair(value: 9, text: 'Uttar Pradesh'),
-    KeyValuePair(value: 10, text: 'Punjab'),
+  final List<DropdownItems<int>> listStates = [
+    DropdownItems(value: 1, text: 'Telangana'),
+    DropdownItems(value: 2, text: 'Karnataka'),
+    DropdownItems(value: 3, text: 'Andhra Pradesh'),
+    DropdownItems(value: 4, text: 'Tamil Nadu'),
+    DropdownItems(value: 5, text: 'Maharashtra'),
+    DropdownItems(value: 6, text: 'Kerala'),
+    DropdownItems(value: 7, text: 'Gujarat'),
+    DropdownItems(value: 8, text: 'Rajasthan'),
+    DropdownItems(value: 9, text: 'Uttar Pradesh'),
+    DropdownItems(value: 10, text: 'Punjab'),
   ];
 
-  final List<KeyValuePair<int>> listCities = [
-    KeyValuePair(value: 1, text: 'Hyderabad'),
-    KeyValuePair(value: 2, text: 'Warangal'),
-    KeyValuePair(value: 3, text: 'Karimnagar'),
-    KeyValuePair(value: 4, text: 'Khammam'),
-    KeyValuePair(value: 5, text: 'Nizamabad'),
-    KeyValuePair(value: 6, text: 'Mahbubnagar'),
-    KeyValuePair(value: 7, text: 'Siddipet'),
-    KeyValuePair(value: 8, text: 'Adilabad'),
-    KeyValuePair(value: 9, text: 'Jagtial'),
-    KeyValuePair(value: 10, text: 'Nirmal'),
+  final List<DropdownItems<int>> listCities = [
+    DropdownItems(value: 1, text: 'Hyderabad'),
+    DropdownItems(value: 2, text: 'Warangal'),
+    DropdownItems(value: 3, text: 'Karimnagar'),
+    DropdownItems(value: 4, text: 'Khammam'),
+    DropdownItems(value: 5, text: 'Nizamabad'),
+    DropdownItems(value: 6, text: 'Mahbubnagar'),
+    DropdownItems(value: 7, text: 'Siddipet'),
+    DropdownItems(value: 8, text: 'Adilabad'),
+    DropdownItems(value: 9, text: 'Jagtial'),
+    DropdownItems(value: 10, text: 'Nirmal'),
   ];
 
   Future<void> onInitRefresh() async {

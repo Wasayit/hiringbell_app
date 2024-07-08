@@ -75,15 +75,12 @@ class MainApp extends StatelessWidget {
     primary: Color.fromRGBO(21, 26, 74, 1),
     // <---- I set white color here
     secondary: Color(0x44444444),
-    background: Color(0xFFFFFFFF),
     // page background default to all pages
     surface: Color(0xFFFFFFFF),
-    // page header background color
-    onBackground: Colors.black,
     error: Colors.redAccent,
     onError: Colors.redAccent,
-    onPrimary: Colors.black,
-    onSecondary: Colors.black,
+    onPrimary: Color(0xFFFFFFFF),
+    onSecondary: Color(0xFFFFFFFF),
     //  default text color
     onSurface: Color(0xFF241E30),
     brightness: Brightness.light,

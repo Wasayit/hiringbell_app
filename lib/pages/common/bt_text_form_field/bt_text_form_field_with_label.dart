@@ -63,6 +63,9 @@ class BTTextFormFieldWithLabel extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label),
+        const SizedBox(
+          height: 5,
+        ),
         BTTextFormField(
           controller: controller,
           hintText: hintText ?? "Enter $label",

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:hiringbell/models/key_value_items.dart';
+import 'package:hiringbell/models/dropdown_items.dart';
 import 'package:hiringbell/models/navigate.dart';
 import 'package:hiringbell/services/http_service.dart';
 import 'package:hiringbell/utilities/Util.dart';
@@ -21,10 +21,10 @@ class ShortRegistrationController extends GetxController {
   final emailController = TextEditingController();
   var gender = "";
 
-  List<KeyValuePair<String>> listGender = [
-    KeyValuePair(text: 'Male', value: 'm'),
-    KeyValuePair(text: 'Female', value: 'f'),
-    KeyValuePair(text: 'Other', value: 'o'),
+  List<DropdownItems<String>> listGender = [
+    DropdownItems(text: 'Male', value: 'm'),
+    DropdownItems(text: 'Female', value: 'f'),
+    DropdownItems(text: 'Other', value: 'o'),
   ];
 
   onSubmit() {

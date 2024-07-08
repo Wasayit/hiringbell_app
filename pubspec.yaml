@@ -60,6 +60,7 @@ dependencies:
   collection: ^1.18.0
   share_plus: ^9.0.0
   stomp_dart_client: ^2.0.0
+  dotted_border: ^2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -98,6 +99,7 @@ flutter:
     - assets/audio-file.gif
     - assets/cs1.png
     - assets/loading.gif
+    - assets/profile-dg-1.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

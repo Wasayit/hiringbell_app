@@ -65,6 +65,7 @@ class JobPost {
   String? jobTypeName;
   String? countryName;
   String? currencyName;
+  int gender = 1;
 
   JobPost.noArg();
 
@@ -80,6 +81,7 @@ class JobPost {
     required this.jobRequirementId,
     this.requiredShortDesc,
     this.completeDescription,
+    required this.gender,
     required this.jobTypeId,
     required this.clientId,
     this.agentId,
@@ -189,6 +191,7 @@ class JobPost {
       'jobRequirementId': data.jobRequirementId,
       'requiredShortDesc': data.requiredShortDesc,
       'completeDescription': data.completeDescription,
+      'gender': data.gender,
       'jobTypeId': data.jobTypeId,
       'clientId': data.clientId,
       'agentId': data.agentId,
@@ -246,6 +249,7 @@ class JobPost {
       jobRequirementId: json['jobRequirementId'],
       requiredShortDesc: json['requiredShortDesc'],
       completeDescription: json['completeDescription'],
+      gender: json['gender'] ?? 1,
       jobTypeId: json['jobTypeId'],
       clientId: json['clientId'] ?? 0,
       agentId: json['agentId'],
