@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hiringbell/models/api_response.dart';
 import 'package:hiringbell/models/constants.dart';
@@ -14,6 +15,7 @@ import 'package:hiringbell/pages/profile/widget/educational_detail/manage_educat
 import 'package:hiringbell/pages/profile/widget/experience/manage_experience.dart';
 import 'package:hiringbell/services/http_service.dart';
 import 'package:hiringbell/utilities/Util.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class ProfileController extends GetxController {
@@ -50,6 +52,8 @@ class ProfileController extends GetxController {
   var jobShortDescController = TextEditingController();
   var aboutMeController = TextEditingController();
   int countryId = 0;
+  var isFileReady = false.obs;
+  var pickedImage = Rx<XFile?>(null).obs;
 
   Future<void> onRefresh() async {
     debugPrint("Refreshing page...");
@@ -458,6 +462,23 @@ class ProfileController extends GetxController {
       isSubmitted.value = false;
     } on Exception catch (_, e) {
       isSubmitted.value = false;
+    }
+  }
+
+  //Profile Image
+  pickProfileImage() async {
+    try {
+      var selectedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (selectedFile != null) {
+        pickedImage.value = selectedFile;
+        // isFileReady.value = true;
+      } else {
+        //isFileReady.value = false;
+        util.showToast("Unable to pick any images");
+      }
+    } on PlatformException catch (e) {
+      //isFileReady.value = false;
+      debugPrint('Failed to pick image: $e');
     }
   }
 }

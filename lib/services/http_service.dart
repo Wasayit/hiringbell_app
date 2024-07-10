@@ -29,7 +29,7 @@ class HttpService extends GetConnect {
   void _initialized({bool isProdMode = true}) {
     String url = isProdMode
         ? "https://www.hiringbell.com/"
-        : "http://192.168.1.100:8090/";
+        : "http://192.168.29.100:8090/";
 
     setBaseUrl(
       baseUrl: "${url}hb/api/",

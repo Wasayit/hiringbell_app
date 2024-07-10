@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hiringbell/models/constants.dart';
@@ -27,10 +29,17 @@ class BasicInfo extends GetView<ProfileController> {
             Container(
               width: double.infinity,
               height: 150,
-              decoration: const BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage('assets/profile-dg-1.jpg'),
-                      fit: BoxFit.cover)),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: controller.pickedImage.value != null
+                    ? FileImage(controller.pickedImage.value)
+                    : const AssetImage('assets/profile-dg-1.jpg') as ImageProvider,
+                  fit: BoxFit.cover
+                )
+                  // image: DecorationImage(
+                  //     image: AssetImage('assets/profile-dg-1.jpg'),
+                  //     fit: BoxFit.cover)
+              ),
             ),
             Positioned(
               bottom: 10,
@@ -48,11 +57,14 @@ class BasicInfo extends GetView<ProfileController> {
               child: CircleAvatar(
                 backgroundColor: Colors.grey.shade400,
                 radius: 15,
-                child: const Icon(
-                  Icons.edit,
-                  size: 14,
-                  color: Colors.black87,
-                ),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.edit,
+                    size: 14,
+                    color: Colors.black87,
+                  ),
+                  onPressed: controller.pickProfileImage,
+                ) 
               ),
             ),
           ],
