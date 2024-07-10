@@ -57,36 +57,18 @@ class ManageEducation extends GetView<ProfileController> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        BtDropdown(
-                          onChanged: (item) {
-                            controller.educationTypeId = item.value;
-                          },
-                          items: [
-                            DropdownItems(value: 1, text: "10th standard"),
-                            DropdownItems(value: 2, text: "12th standard"),
-                            DropdownItems(value: 3, text: "Graduation"),
-                          ],
-                          label: "Education Type",
-                        ),
+                    BtDropdown.styled(
+                      onChanged: (item) {
+                        controller.educationTypeId = item.value;
+                      },
+                      items: [
+                        DropdownItems(value: 1, text: "10th standard"),
+                        DropdownItems(value: 2, text: "12th standard"),
+                        DropdownItems(value: 3, text: "Graduation"),
                       ],
+                      selectedItemId: controller.profileDetail!.education!.educationTypeId,
+                      label: "Education Type",
                     ),
-                    // TextFormField(
-                    //   maxLines: null,
-                    //   controller: controller.educationTypeController,
-                    //   decoration: Util.getTextFieldDecoration(
-                    //     placeholder: 'Education type e.g. Graduation',
-                    //   ),
-                    //   validator: (value) {
-                    //     if (value!.isEmpty) {
-                    //       return "Education type is required";
-                    //     }
-                    //     return null;
-                    //   },
-                    //   onChanged: (value) {},
-                    // ),
                     const SizedBox(
                       height: 10,
                     ),
@@ -162,22 +144,18 @@ class ManageEducation extends GetView<ProfileController> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        BtDropdown(
-                          onChanged: (item) {
-                            controller.duration = item.value;
-                          },
-                          items: [
-                            DropdownItems(value: 1, text: "1 year"),
-                            DropdownItems(value: 2, text: "2 years"),
-                            DropdownItems(value: 3, text: "3 years"),
-                            DropdownItems(value: 4, text: "4 years")
-                          ],
-                          label: "Duration",
-                        ),
+                    BtDropdown.styled(
+                      onChanged: (item) {
+                        controller.duration = item.value;
+                      },
+                      items: [
+                        DropdownItems(value: 1, text: "1 year"),
+                        DropdownItems(value: 2, text: "2 years"),
+                        DropdownItems(value: 3, text: "3 years"),
+                        DropdownItems(value: 4, text: "4 years")
                       ],
+                      selectedItemId: controller.profileDetail!.education!.duration,
+                      label: "Duration",
                     ),
                     const SizedBox(
                       height: 20,
@@ -213,8 +191,8 @@ class ManageEducation extends GetView<ProfileController> {
                           else
                             ListTile(
                               leading: const Icon(Icons.flag),
-                              title: Text(
-                                  controller.universityBoardCountry.value),
+                              title:
+                                  Text(controller.universityBoardCountry.value),
                               subtitle: const Text(
                                   "Above is your selected work location"),
                             ),

@@ -6,7 +6,6 @@ import 'package:flutter_sound_record/flutter_sound_record.dart';
 import 'package:get/get.dart';
 import 'package:hiringbell/models/constants.dart';
 import 'package:hiringbell/models/user.dart';
-import 'package:hiringbell/pages/common/realtime_communication/chat_stream_service.dart';
 import 'package:hiringbell/services/http_service.dart';
 import 'package:hiringbell/utilities/Util.dart';
 import 'package:just_audio/just_audio.dart';
