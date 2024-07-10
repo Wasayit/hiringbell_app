@@ -1,14 +1,24 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hiringbell/models/constants.dart';
+import 'package:hiringbell/models/experience.dart';
 import 'package:hiringbell/pages/common/child_layout/child_layout.dart';
+import 'package:hiringbell/pages/common/search_field/search_field.dart';
 import 'package:hiringbell/pages/common/textarea/bt_textarea.dart';
 import 'package:hiringbell/pages/profile/profile_controller.dart';
 import 'package:hiringbell/utilities/Util.dart';
 
 class ManageExperience extends GetView<ProfileController> {
-  const ManageExperience({super.key});
+  final Experience experience;
+  final bool editMode;
+
+  const ManageExperience({
+    super.key,
+    required this.experience,
+    this.editMode = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +66,6 @@ class ManageExperience extends GetView<ProfileController> {
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
-                          controller.util.showToast("Role name is required",
-                              type: Constants.fail);
                           return "Role name is required";
                         }
                         return null;
@@ -75,10 +83,7 @@ class ManageExperience extends GetView<ProfileController> {
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
-                          controller.util.showToast(
-                              "Job short description is required",
-                              type: Constants.fail);
-                          return "Job description is required";
+                          return "Company name is required";
                         }
                         return null;
                       },
@@ -87,84 +92,126 @@ class ManageExperience extends GetView<ProfileController> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: InkWell(
-                            onTap: () {
-                              debugPrint("working....");
-                              controller.dojController.text = "12 July, 2024";
-                            },
-                            child: TextFormField(
-                              maxLines: null,
-                              enabled: false,
-                              controller: controller.dojController,
-                              decoration: Util.getTextFieldDecoration(
-                                placeholder: 'Date of joining',
-                                trailingIcon: IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(
-                                    Icons.calendar_today,
-                                    size: 16,
+                    Obx(
+                      () => Row(
+                        children: [
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {
+                                controller.onDateSelected(true);
+                              },
+                              child: TextFormField(
+                                maxLines: null,
+                                enabled: false,
+                                controller: controller.dojController.value,
+                                decoration: Util.getTextFieldDecoration(
+                                  placeholder: 'Date of joining',
+                                  trailingIcon: IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(
+                                      Icons.calendar_today,
+                                      size: 16,
+                                    ),
                                   ),
                                 ),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "DOJ is required";
+                                  }
+                                  return null;
+                                },
+                                onChanged: (value) {},
                               ),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  controller.util.showToast(
-                                      "Job short description is required",
-                                      type: Constants.fail);
-                                  return "Job description is required";
-                                }
-                                return null;
-                              },
-                              onChanged: (value) {},
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Expanded(
-                          child: InkWell(
-                            onTap: () {
-                              debugPrint("working....");
-                            },
-                            child: TextFormField(
-                              maxLines: null,
-                              enabled: false,
-                              controller: controller.dolController,
-                              decoration: Util.getTextFieldDecoration(
-                                placeholder: 'Date of leaving',
-                                trailingIcon: IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(
-                                    Icons.calendar_today,
-                                    size: 16,
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {
+                                controller.onDateSelected(false);
+                              },
+                              child: TextFormField(
+                                maxLines: null,
+                                enabled: false,
+                                controller: controller.dolController.value,
+                                decoration: Util.getTextFieldDecoration(
+                                  placeholder: 'Date of leaving',
+                                  trailingIcon: IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(
+                                      Icons.calendar_today,
+                                      size: 16,
+                                    ),
                                   ),
                                 ),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "DOL is required";
+                                  }
+                                  return null;
+                                },
+                                onChanged: (value) {},
                               ),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  controller.util.showToast(
-                                    "Job short description is required",
-                                    type: Constants.fail,
-                                  );
-                                  return "Job description is required";
-                                }
-                                return null;
-                              },
-                              onChanged: (value) {},
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 20,
+                    ),
+                    Obx(
+                      () => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Your present/last work location",
+                                style: Util.getLabelHeaderStyle(),
+                              ),
+                              SearchField.iconSearch(
+                                searchUrl: "core/filter/getCountries",
+                                searchIcon: const Icon(Icons.add),
+                                onSelected:
+                                    controller.handledSelectedWorkLocation,
+                                ratio: 1,
+                              ),
+                            ],
+                          ),
+                          if (controller.workLocationCountryName.value.isEmpty)
+                            const Text(
+                              "Click + icon add your work location (i.e. country)",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: Constants.fontSize * .9,
+                              ),
+                            )
+                          else
+                            ListTile(
+                              leading: const Icon(Icons.flag),
+                              title: Text(
+                                  controller.workLocationCountryName.value),
+                              subtitle: const Text(
+                                  "Above is your selected work location"),
+                            ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
                     ),
                     BtTextarea(
-                      textController: controller.jobDescController,
+                      textController: controller.roleDescriptionController,
+                      onValidate: (value) {
+                        if (value!.isEmpty) {
+                          return "Please enter text";
+                        }
+                        return null;
+                      },
                     ),
                     const SizedBox(
                       height: Constants.contentVSpace * 2,
@@ -172,7 +219,13 @@ class ManageExperience extends GetView<ProfileController> {
                     Obx(
                       () => Center(
                         child: ElevatedButton(
-                          onPressed: controller.updateExperience,
+                          onPressed: () {
+                            if(editMode && controller.profileDetail!.experience!.experienceId == 0) {
+                              controller.util.showToast("Experience page is not loaded correctly.");
+                              return;
+                            }
+                            controller.updateExperience();
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
                                 Theme.of(context).colorScheme.primary,

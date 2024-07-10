@@ -4,12 +4,14 @@ import 'package:hiringbell/models/constants.dart';
 import 'package:hiringbell/utilities/Util.dart';
 
 class BtTextarea extends StatefulWidget {
+  final String? Function(String?)? onValidate;
   final TextEditingController textController;
   final int limit;
 
   const BtTextarea({
     super.key,
     required this.textController,
+    required this.onValidate,
     this.limit = 500,
   });
 
@@ -19,12 +21,22 @@ class BtTextarea extends StatefulWidget {
 
 class _BtTextareaState extends State<BtTextarea> {
   int _characterCount = 0;
+  bool _isActive = true;
   Util util = Util.getInstance();
 
   void _updateCharCount() {
-    setState(() {
-      _characterCount = widget.limit - widget.textController.text.length;
-    });
+    if(_isActive) {
+      setState(() {
+        _characterCount = widget.limit - widget.textController.text.length;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    // Cancel any async operations or timers here
+    _isActive = false;
+    super.dispose();
   }
 
   @override
@@ -32,10 +44,12 @@ class _BtTextareaState extends State<BtTextarea> {
     // TODO: implement initState
     super.initState();
 
-    setState(() {
-      _characterCount = 500;
-      widget.textController.addListener(_updateCharCount);
-    });
+    if(_isActive) {
+      setState(() {
+        _characterCount = 500;
+        widget.textController.addListener(_updateCharCount);
+      });
+    }
   }
 
   @override
@@ -50,13 +64,7 @@ class _BtTextareaState extends State<BtTextarea> {
           decoration: Util.getTextFieldDecoration(
               placeholder: 'Write your text here...'
           ),
-          validator: (value) {
-            if (value!.isEmpty) {
-              util.showToast("Please enter text", type: Constants.fail);
-              return "Please enter text";
-            }
-            return null;
-          },
+          validator: widget.onValidate,
           inputFormatters: [LengthLimitingTextInputFormatter(100)],
           onChanged: (value) {},
         ),

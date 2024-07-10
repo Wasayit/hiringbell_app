@@ -5,10 +5,10 @@ import 'package:hiringbell/pages/common/bt_divider/bt_divider.dart';
 import 'package:hiringbell/pages/common/dashed_container/bt_dashed_container.dart';
 import 'package:hiringbell/pages/common/list_tile/bt_list_tile.dart';
 import 'package:hiringbell/pages/profile/profile_controller.dart';
-import 'package:hiringbell/pages/profile/widget/experience/manage_experience.dart';
+import 'package:hiringbell/pages/profile/widget/educational_detail/manage_education.dart';
 
-class Experience extends GetView<ProfileController> {
-  const Experience({super.key});
+class Education extends GetView<ProfileController> {
+  const Education({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,20 +24,26 @@ class Experience extends GetView<ProfileController> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    "Experience",
+                    "Education",
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: Constants.fontSize * 1.5,
                     ),
                   ),
-                  if (controller.experienceFlag.value)
-                    const Wrap(
+                  if (controller.profileDetail!.education != null)
+                    Wrap(
                       children: [
-                        Icon(Icons.add),
-                        SizedBox(
+                        InkWell(
+                          onTap: controller.addEducation,
+                            child: const Icon(Icons.add),
+                        ),
+                        const SizedBox(
                           width: 10,
                         ),
-                        Icon(Icons.edit),
+                        InkWell(
+                          onTap: controller.editEducation,
+                          child: const Icon(Icons.edit),
+                        ),
                       ],
                     ),
                 ],
@@ -47,17 +53,17 @@ class Experience extends GetView<ProfileController> {
               ),
               BtListTile(
                 left: const Icon(
-                  Icons.leaderboard,
-                  color: Colors.orange,
+                  Icons.account_balance,
+                  color: Colors.red,
                   size: 60,
                 ),
-                right: !controller.experienceFlag.value
+                right: controller.profileDetail!.education == null
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const Text(
-                            "Write something about your experience",
+                            "Add your educational qualification",
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: Constants.fontSize * 1.3,
@@ -68,11 +74,9 @@ class Experience extends GetView<ProfileController> {
                           ),
                           BtDashedContainer(
                             content:
-                                "Add your work experience share your detail",
+                                "Add your educational qualification detail",
                             child: ElevatedButton(
-                              onPressed: () {
-                                Get.to(const ManageExperience());
-                              },
+                              onPressed: controller.addEducation,
                               child: const Text("Click to Add"),
                             ),
                           ),
@@ -83,38 +87,17 @@ class Experience extends GetView<ProfileController> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            "Solution Architect",
+                            "Biju Patnayak University of Technology, Odisha",
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: Constants.fontSize * 1.3,
                             ),
                           ),
-                          Wrap(
-                            children: [
-                              Text("BottomHalf"),
-                              Text("Full-time"),
-                            ],
-                          ),
-                          Text("Mar 2020 - Present. 4 yrs 5 months"),
-                          Text("Asansol, West Bengal, India - ASN"),
+                          Text(
+                              "BTech - Bachelor of Technology, Computer Science"),
+                          Text("2006 - 2013"),
                           SizedBox(
-                            height: 20,
-                          ),
-                          SizedBox(
-                            width: Constants.contentHSpace,
-                          ),
-                          Flexible(
-                            fit: FlexFit.loose,
-                            child: Wrap(
-                              children: [
-                                Text(
-                                  "Solution Architecture, good knowledge in Java, C# and AI using python and c++",
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20,
+                            height: Constants.contentVSpace,
                           ),
                           Wrap(
                             children: [
@@ -122,8 +105,8 @@ class Experience extends GetView<ProfileController> {
                               SizedBox(
                                 width: Constants.contentHSpace,
                               ),
-                              Text("Solution Architecture, "),
-                              Text("Spring boot and +1 skills")
+                              Text(
+                                  "Solution Architecture and Artificial Intelligence (AI)"),
                             ],
                           ),
                         ],

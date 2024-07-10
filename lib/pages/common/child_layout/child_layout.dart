@@ -5,15 +5,16 @@ import 'package:hiringbell/models/navigate.dart';
 import 'package:hiringbell/utilities/Util.dart';
 
 class ChildLayout extends StatelessWidget {
-  Widget child;
-  String title;
-  bool enableSettingOption;
+  final Widget child;
+  final String title;
+  final bool enableSettingOption;
 
-  ChildLayout(
-      {super.key,
-      required this.child,
-      required this.title,
-      this.enableSettingOption = false});
+  const ChildLayout({
+    super.key,
+    required this.child,
+    required this.title,
+    this.enableSettingOption = false,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -5,8 +5,8 @@ import 'package:hiringbell/pages/profile/profile_controller.dart';
 import 'package:hiringbell/pages/profile/widget/about_me/about_me.dart';
 import 'package:hiringbell/pages/profile/widget/analytics_reports.dart';
 import 'package:hiringbell/pages/profile/widget/user_intro/basic_info.dart';
-import 'package:hiringbell/pages/profile/widget/education.dart';
-import 'package:hiringbell/pages/profile/widget/experience/experience.dart';
+import 'package:hiringbell/pages/profile/widget/educational_detail/education.dart';
+import 'package:hiringbell/pages/profile/widget/experience/work_experience.dart';
 import 'package:hiringbell/pages/profile/widget/interests.dart';
 import 'package:hiringbell/pages/profile/widget/skills.dart';
 
@@ -30,24 +30,33 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: controller.reloadPage,
-      child: Obx(
-        () => ChildLayout(
-          title: "Profile",
-          child: controller.isReady.value
-              ? ListView(
-                  children: const [
-                    BasicInfo(),
-                    AnalyticsReports(),
-                    AboutMe(),
-                    Experience(),
-                    Education(),
-                    Skills(),
-                    Interests(),
-                  ],
-                )
-              : const CircularProgressIndicator(),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool didPop) async {
+        if(!didPop) {
+          debugPrint("Loaded -------------------------------------");
+          Navigator.of(context).pop();
+        }
+      },
+      child: RefreshIndicator(
+        onRefresh: controller.reloadPage,
+        child: Obx(
+          () => ChildLayout(
+            title: "Profile",
+            child: controller.isReady.value
+                ? ListView(
+                    children: const [
+                      BasicInfo(),
+                      AnalyticsReports(),
+                      AboutMe(),
+                      WorkExperience(),
+                      Education(),
+                      Skills(),
+                      Interests(),
+                    ],
+                  )
+                : const CircularProgressIndicator(),
+          ),
         ),
       ),
     );

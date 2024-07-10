@@ -97,16 +97,6 @@ class _BtDropdownState extends State<BtDropdown> {
             child:
                 widget.materialStyle ? getStyledDropdown() : getFullDropdown(),
           ),
-          if (selectedItem != null && selectedItem != null)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                    'You selected a ${selectedItem?.text} ${selectedItem?.text}'),
-              ],
-            )
-          else
-            const Text('Please select a color and an icon.')
         ],
       ),
     );
