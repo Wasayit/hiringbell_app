@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:hiringbell/pages/create_job/job_post_page.dart';
+import 'package:hiringbell/pages/post_new_job/job_post_index.dart';
 
 import '../../models/files.dart';
 import '../../models/posts.dart';
@@ -55,6 +56,8 @@ class PostsController extends GetxController {
   Future<void> loadHomePage() async {
     isHomepageReady(false);
 
+    var user = util?.getUserDetail();
+    var userId = user?.userId;
     posts = RxList<Posts>();
     try {
       http.httpGet("core/userposts/getOwnPosts/${++pageIndex}").then((value) {
@@ -134,7 +137,12 @@ class PostsController extends GetxController {
   }
 
   loadJobPostPage() async {
-    var result = await Get.to(const JobPostPage());
+    // var result = await Get.to(const JobPostPage());
+    var result = await Get.to(
+      const PostNewJobIndex(
+        post: null,
+      ),
+    );
     if (result != null) {
       Fluttertoast.showToast(msg: "Posted successfully");
       onRefresh();

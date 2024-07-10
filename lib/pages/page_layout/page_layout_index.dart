@@ -4,7 +4,9 @@ import 'package:get/get.dart';
 import 'package:hiringbell/pages/home/widgets/search_box.dart';
 import 'package:hiringbell/pages/page_layout/page_layout_controller.dart';
 import 'package:hiringbell/pages/page_layout/widget/screen_manager.dart';
+import 'package:hiringbell/pages/view_applied_jobs/view_applied_jobs_page.dart';
 import 'package:hiringbell/pages/view_apply_post/view_apply_post_detail.dart';
+import 'package:hiringbell/pages/view_saved_jobs/view_saved_jobs_page.dart';
 import 'package:hiringbell/utilities/Util.dart';
 
 import '../../models/navigate.dart';
@@ -26,7 +28,7 @@ class _PageLayoutIndexState extends State<PageLayoutIndex> {
 
     // handle message
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      if(message.notification != null) {
+      if (message.notification != null) {
         controller.onItemTapped(0);
         var result = Get.to(const ViewApplyPostDetail());
       }
@@ -45,20 +47,57 @@ class _PageLayoutIndexState extends State<PageLayoutIndex> {
           children: [
             Expanded(
               flex: 2,
-              child: Container(
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 2
-                ),
-                child: CircleAvatar(
+              child: IconButton(
+                onPressed: (){
+                  Get.toNamed(Navigate.profile);
+                },
+                icon: CircleAvatar(
                   radius: 23.0,
                   backgroundColor: Colors.grey.shade300,
                   child: Text(controller.user.firstName[0]),
                 ),
+                /*child: PopupMenuButton(
+                  icon: CircleAvatar(
+                    radius: 23.0,
+                    backgroundColor: Colors.grey.shade300,
+                    child: Text(controller.user.firstName[0]),
+                  ),
+                  itemBuilder: (context) => [
+                    const PopupMenuItem(
+                        value: 'Applied_Jobs',
+                        child: Row(
+                          children: [
+                            Icon(Icons.check),
+                            SizedBox(width: 5),
+                            Text('Applied Jobs')
+                          ],
+                        )),
+                    const PopupMenuItem(
+                        value: 'Saved_Jobs',
+                        child: Row(
+                          children: [
+                            Icon(Icons.bookmark),
+                            SizedBox(width: 5),
+                            Text('Saved Jobs')
+                          ],
+                        )),
+                  ],
+                  onSelected: (value) {
+                    if (value == 'Applied_Jobs') {
+                      Get.to(const ViewAppliedJobsPage());
+                      return;
+                    }
+                    if (value == 'Saved_Jobs') {
+                      Get.to(const ViewSavedJobsPage());
+                      return;
+                    }
+                  },
+                ),*/
               ),
             ),
             const Expanded(
               flex: 9,
-              child: Text("Hiring Bell"), // SearchBox(),
+              child: Text("Hiring Bell..."), // SearchBox(),
             ),
             Expanded(
               flex: 1,
@@ -84,7 +123,7 @@ class _PageLayoutIndexState extends State<PageLayoutIndex> {
               icon: Icon(Icons.home),
               label: 'Home',
             ),
-           /* BottomNavigationBarItem(
+            /* BottomNavigationBarItem(
               icon: Icon(Icons.people_alt_outlined),
               label: 'Friends',
             ),

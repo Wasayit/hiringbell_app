@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:hiringbell/pages/login/login_controller.dart';
 import 'package:hiringbell/pages/login/widgets/login_actions.dart';
+import 'package:hiringbell/pages/registration/short_registration_page.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -26,7 +27,7 @@ class _LoginFormState extends State<LoginForm> {
           child: Column(
             children: [
               const SizedBox(
-                height: 100,
+                height: 50,
               ),
               const Text(
                 "Sign In",
@@ -158,7 +159,15 @@ class _LoginFormState extends State<LoginForm> {
                 },
                 label: const Text('Login with Google'),
                 icon: const Icon(Icons.g_mobiledata),
-              )
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton.icon(
+                onPressed: () {
+                  Get.to(const ShortRegistrationForm());
+                },
+                label: const Text('Sign Up'),
+                icon: const Icon(Icons.person),
+              ),
             ],
           ),
         ),

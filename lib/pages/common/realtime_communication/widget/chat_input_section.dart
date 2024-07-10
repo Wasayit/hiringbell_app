@@ -1,13 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hiringbell/pages/comments/comments_controller.dart';
-import 'package:hiringbell/pages/comments/widgets/recording_timer.dart';
+import 'package:hiringbell/pages/common/realtime_communication/chat_stream_service.dart';
 
-class ChatInputSection extends GetView<CommentsController> {
-  const ChatInputSection({super.key});
+class ChatInputSection extends GetView<ChatStreamService> {
+  final String groupId;
+  final String senderId;
+  final String recipientId;
+  final bool isGroupChat;
+
+  const ChatInputSection({
+    super.key,
+    required this.senderId,
+    required this.recipientId,
+    this.isGroupChat = false,
+    this.groupId = "",
+  });
 
   @override
   Widget build(BuildContext context) {
+    controller.senderId = senderId;
+    controller.recipientId = recipientId;
+    controller.isGroupChat = isGroupChat;
+    controller.groupId = groupId;
+    controller.validate();
+
     return Material(
       elevation: 10.0,
       child: Row(
@@ -55,7 +71,10 @@ class ChatInputSection extends GetView<CommentsController> {
                             const SizedBox(
                               width: 10,
                             ),
-                            Image.asset("assets/loading.gif", width: 40,),
+                            Image.asset(
+                              "assets/loading.gif",
+                              width: 40,
+                            ),
                           ],
                         ),
                       )
@@ -63,7 +82,7 @@ class ChatInputSection extends GetView<CommentsController> {
                       Expanded(
                         child: TextField(
                           controller: controller.messageController,
-                          readOnly: true,
+                          // readOnly: true,
                           decoration: const InputDecoration(
                             hintText: 'Type a message (currently disable)',
                             border: InputBorder.none,
@@ -71,9 +90,9 @@ class ChatInputSection extends GetView<CommentsController> {
                           onChanged: (text) {},
                         ),
                       ),
-                    const IconButton(
-                      icon: Icon(Icons.send),
-                      onPressed: null, //controller.sendMessage,
+                    IconButton(
+                      icon: const Icon(Icons.send),
+                      onPressed: controller.send,
                     ),
                   ],
                 ),
@@ -93,15 +112,6 @@ class ChatInputSection extends GetView<CommentsController> {
           ),
         ],
       ),
-      /*
-          const Text(
-            "Comments are currently disabled",
-            style: TextStyle(
-              color: Colors.grey,
-              fontWeight: FontWeight.w500,
-              fontSize: 20,
-            ),
-          ),*/
     );
   }
 }

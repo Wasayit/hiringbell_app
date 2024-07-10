@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:hiringbell/models/constants.dart';
 import 'package:jiffy/jiffy.dart';
@@ -20,6 +19,7 @@ class User {
   List<int> jobLocationIds = [];
   bool isActive = false;
   String? token = Constants.empty;
+  String? aboutMe = Constants.empty;
 
   static final User instance = User._internal();
 
@@ -44,6 +44,7 @@ class User {
     this.jobLocationIds,
     this.isActive,
     this.token,
+    this.aboutMe,
   );
 
   static DateTime toDateTime(String? date) {
@@ -66,17 +67,23 @@ class User {
     instance.state = json["state"] ?? "";
     instance.userId = json["userId"];
 
-    var categoryIds =
-        (jsonDecode(json["categoryTypeIds"] ?? []) as List<dynamic>)
-            .cast<int>();
-    instance.categoryTypeIds = categoryIds;
+    if (json["categoryTypeIds"] != null) {
+      var categoryIds =
+          (jsonDecode(json["categoryTypeIds"] ?? []) as List<dynamic>)
+              .cast<int>();
+      instance.categoryTypeIds = categoryIds;
+    }
 
-    var locationIds =
-        (jsonDecode(json["jobLocationIds"] ?? []) as List<dynamic>).cast<int>();
-    instance.jobLocationIds = locationIds;
+    if (json["jobLocationIds"] != null) {
+      var locationIds =
+          (jsonDecode(json["jobLocationIds"] ?? []) as List<dynamic>)
+              .cast<int>();
+      instance.jobLocationIds = locationIds;
+    }
 
     instance.isActive = json["isActive"];
     instance.token = json["token"];
+    instance.aboutMe = json["aboutMe"];
     return instance;
   }
 }

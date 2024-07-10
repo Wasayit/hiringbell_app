@@ -45,7 +45,7 @@ class LoginController extends GetxController {
       try {
         http.login("oauth/authenticate", {
           "password": passwordController.text,
-          "email": usernameController.text,
+          "email": usernameController.text.trim(),
           "mobile": null,
         }).then((userData) {
           if (userData == Constants.success) {
@@ -63,6 +63,8 @@ class LoginController extends GetxController {
       } catch (e) {
         isSubmitted(false);
       }
+    } else {
+      isSubmitted(false);
     }
   }
 
@@ -97,7 +99,7 @@ class LoginController extends GetxController {
       try {
         http.login("oauth/googlemobilelogin", {"token": accessToken}).then(
             (userData) {
-          if (userData == "success") {
+          if (userData == Constants.success) {
             isSubmitted(false);
             Fluttertoast.showToast(msg: "Logged in successfully");
             Get.offAllNamed(Navigate.homeLayout,
@@ -134,16 +136,13 @@ class LoginController extends GetxController {
 
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
     isSubmitted = false.obs;
     user = util.getUserDetail();
 
-   /* usernameController.text = "istiyaq.4game@gmail.com";
-    passwordController.text = "Hiring_Bell@bot@9100@bottomHalf";*/
-    /*usernameController.text = "test2@gmail.com";
-    passwordController.text = "123456";*/
-    // usernameController.text = "bottomhalf.dev@gmail.com";
-    // passwordController.text = "Hiring_Bell@bot@9100@bottomHalf";
+    if (!Constants.isProduction) {
+      usernameController.text = "istiyaq.4game@gmail.com";
+      passwordController.text = "12345678";
+    }
   }
 }

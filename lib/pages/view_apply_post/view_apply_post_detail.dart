@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:hiringbell/models/constants.dart';
 import 'package:hiringbell/pages/common/error_page/error_page.dart';
 import 'package:hiringbell/pages/home/home_controller.dart';
 import 'package:hiringbell/pages/view_apply_post/view_apply_post_controller.dart';
@@ -21,7 +19,6 @@ class _ViewApplyPostDetailState extends State<ViewApplyPostDetail> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     controller.isLoading.value = true;
     controller.loadPostDetail();
@@ -31,7 +28,7 @@ class _ViewApplyPostDetailState extends State<ViewApplyPostDetail> {
   Widget build(BuildContext context) {
     return PopScope(
       onPopInvoked: (canPop) async {
-        if(canPop) {
+        if (canPop) {
           home.setAppliedExecutedState(controller.jobStatus);
         }
       },
@@ -51,9 +48,7 @@ class _ViewApplyPostDetailState extends State<ViewApplyPostDetail> {
                   : Column(
                       children: [
                         Expanded(
-                          flex: controller.jobStatusTrigger.value
-                              ? 9
-                              : 10,
+                          flex: controller.jobStatusTrigger.value ? 9 : 10,
                           child: const SingleChildScrollView(
                             child: PostDetail(),
                           ),

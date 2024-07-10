@@ -1,11 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/exceptions/exceptions.dart';
 import 'package:hiringbell/models/api_response.dart';
-import 'package:hiringbell/models/auth.dart';
 import 'package:hiringbell/models/constants.dart';
 import 'package:hiringbell/models/user.dart';
 import 'package:hiringbell/utilities/Util.dart';
@@ -19,7 +17,7 @@ class HttpService extends GetConnect {
   String? _token;
 
   HttpService._internal() {
-    _initialized(isProdMode: true);
+    _initialized(isProdMode: Constants.isProduction);
   }
 
   String get token => _token ?? "";
@@ -29,8 +27,9 @@ class HttpService extends GetConnect {
   }
 
   void _initialized({bool isProdMode = true}) {
-    String url =
-    isProdMode ? "https://www.hiringbell.com/" : "http://192.168.1.100:8090/";
+    String url = isProdMode
+        ? "https://www.hiringbell.com/"
+        : "http://192.168.29.100:8090/";
 
     setBaseUrl(
       baseUrl: "${url}hb/api/",
@@ -74,24 +73,40 @@ class HttpService extends GetConnect {
 
   Future<dynamic> httpGet(String url) async {
     var apiUrl = Uri.parse(getBaseUrl + url);
-    debugPrint("Page url: $apiUrl");
+    // debugPrint("Page url: $apiUrl");
     final response = await get('$apiUrl', headers: header());
     if (response.status.isOk) {
       var body = ApiResponse.fromJson(response.body);
       return body.responseBody;
     } else {
-      debugPrint('Request failed with status: ${response.statusCode}');
+      debugPrint(
+          'Get Request failed with status: ${response.statusCode} for the $apiUrl');
       return null;
     }
   }
 
   Future<ApiResponse?> httpPost(String url, Map data) async {
-    final response = await post(getBaseUrl + url, data, headers: header());
+    var apiUrl = getBaseUrl + url;
+    final response = await post(apiUrl, data, headers: header());
     if (response.status.isOk) {
       var body = ApiResponse.fromJson(response.body);
       return body;
     } else {
-      debugPrint('Request failed with status: ${response.statusCode}');
+      debugPrint(
+          'Post Request failed with status: ${response.statusCode} for the path: $apiUrl');
+      return null;
+    }
+  }
+
+  Future<ApiResponse?> httpDelete(String url) async {
+    var apiUrl = getBaseUrl + url;
+    final response = await delete(apiUrl, headers: header());
+    if (response.status.isOk) {
+      var body = ApiResponse.fromJson(response.body);
+      return body;
+    } else {
+      debugPrint(
+          'Delete Request failed with status: ${response.statusCode} for the path: $apiUrl');
       return null;
     }
   }
@@ -113,12 +128,14 @@ class HttpService extends GetConnect {
   }
 
   Future<Response<T>> httpPut<T>(String url, Map body) async {
-    final response = await put(getBaseUrl + url, body, headers: header());
+    var apiUrl = getBaseUrl + url;
+    final response = await put(apiUrl, body, headers: header());
     if (response.status.isOk) {
       return Response(
           body: response.body as T, statusCode: response.statusCode);
     } else {
-      throw Exception('Request failed with status: ${response.statusCode}');
+      throw Exception(
+          'Request failed with status: ${response.statusCode} for the path: $apiUrl');
     }
   }
 
@@ -197,6 +214,52 @@ class HttpService extends GetConnect {
     } else {
       request.fields['postImages'] = jsonEncode(List.empty());
     }
+
+    var response = await request.send();
+    final respStr = await response.stream.bytesToString();
+    var result = jsonDecode(respStr);
+
+    if (result["HttpStatusCode"] == 200) {
+      return result["ResponseBody"];
+    } else {
+      return null;
+    }
+  }
+
+  Future<dynamic> uploadUser(
+      String url, XFile? profileImage, List<XFile>? docs, dynamic data) async {
+    var uri = Uri.parse("$_baseUrl$url");
+    var request = http.MultipartRequest('POST', uri);
+    request.headers.addAll(imageHeader());
+
+    request.fields['user'] = json.encode(data);
+    if (profileImage != null) {
+      request.files.add(
+        http.MultipartFile.fromBytes(
+            'profileImage', await profileImage.readAsBytes(),
+            filename: profileImage.path),
+      );
+    } else {
+      request.fields['profileImage'] = jsonEncode(List.empty());
+    }
+
+    if (docs != null) {
+      for (var i = 0; i < docs.length; i++) {
+        request.files.add(
+          http.MultipartFile.fromBytes('Documents', await docs[i].readAsBytes(),
+              filename: docs[i].path),
+          // filename: docs[i].path ),
+        );
+      }
+    } else {
+      request.fields['Documents'] = jsonEncode(List.empty());
+    }
+
+    // if (deletedDocsId != null) {
+    //   request.fields['deletedDocsId'] = jsonEncode(deletedDocsId);
+    // } else {
+    //   request.fields['deletedDocsId'] = jsonEncode(null);
+    // }
 
     var response = await request.send();
     final respStr = await response.stream.bytesToString();

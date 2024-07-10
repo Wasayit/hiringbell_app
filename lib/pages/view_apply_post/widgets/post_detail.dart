@@ -10,6 +10,7 @@ import 'package:hiringbell/pages/view_apply_post/widgets/applied_status.dart';
 import 'package:hiringbell/pages/view_apply_post/widgets/feature_detail.dart';
 import 'package:hiringbell/pages/view_apply_post/widgets/post_image.dart';
 import 'package:hiringbell/pages/view_apply_post/widgets/publisher_detail.dart';
+import 'package:hiringbell/pages/view_apply_post/widgets/saved_status.dart';
 import 'package:jiffy/jiffy.dart';
 
 class PostDetail extends GetView<ViewPostController> {
@@ -98,6 +99,15 @@ class PostDetail extends GetView<ViewPostController> {
                 Obx(
                   () => !controller.isApplying.value
                       ? const AppliedStatus()
+                      : const SizedBox.shrink(),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Obx(
+                  () => controller.jobSavedStatusTrigger.value &&
+                          !controller.jobStatusTrigger.value
+                      ? const SavedStatus()
                       : const SizedBox.shrink(),
                 ),
                 const SizedBox(

@@ -1,27 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:hiringbell/pages/common/bt_input_decoration/bt_input_decoration.dart';
 
-import '../bt_single_select/form_util.dart';
+import '../bt_select/form_util.dart';
 
 class BTTextFormField extends StatelessWidget {
   final String? hintText;
-  String? initialValue;
-  final TextInputType keyboardType;
+  final String? initialValue;
+  final TextInputType? keyboardType;
   final String? Function(String?)? validator;
   final ValueChanged<String>? onChanged;
   final int? minLines;
   final int? maxLines;
   final IconData? prefixIcon;
+  final bool isEmptyValidation;
+  final String? emptyMessage;
+  final bool obscureText;
+  final TextEditingController? controller;
 
-  BTTextFormField({
+  const BTTextFormField({
     super.key,
     this.hintText,
     this.initialValue,
-    this.keyboardType = TextInputType.text,
+    this.keyboardType,
     this.validator,
     this.onChanged,
     this.maxLines,
     this.minLines,
     this.prefixIcon,
+    this.isEmptyValidation = true,
+    this.emptyMessage,
+    this.obscureText = false,
+    this.controller,
   });
 
   @override
@@ -29,35 +38,45 @@ class BTTextFormField extends StatelessWidget {
     // String _value = initialValue ?? "";
 
     return TextFormField(
-      keyboardType: keyboardType,
-      decoration: InputDecoration(
-        border: const OutlineInputBorder(),
-        filled: true,
-        fillColor: Colors.white,
-        contentPadding: prefixIcon == null
-            ? const EdgeInsets.all(10.0)
-            : const EdgeInsets.symmetric(vertical: 2),
-        prefixIcon: prefixIcon == null
-            ? null
-            : Icon(
-                prefixIcon,
-                color: Colors.blueAccent,
-                size: 20,
-              ),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey, width: 1.0),
-        ),
-        enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey, width: 1.0),
-        ),
+      controller: controller,
+      // keyboardType: keyboardType ?? FormUtil.getKeyboardType(T, minLines),
+      keyboardType: keyboardType ??
+          ((minLines != null && minLines! > 1)
+              ? TextInputType.multiline
+              : TextInputType.text),
+      decoration: btInputDecoration(
         hintText: hintText,
+        prefixIcon: prefixIcon,
       ),
       textInputAction: TextInputAction.next,
       initialValue: FormUtil.isEdit ? initialValue : null,
-      onChanged: onChanged,
-      validator: validator,
+      obscureText: obscureText,
+      onChanged: (value) {
+        if (onChanged == null) return;
+        onChanged!(value);
+      },
+      validator: (value) {
+        if (isEmptyValidation && (value == null || value.trim().isEmpty)) {
+          return emptyMessage ?? "Please enter $hintText";
+        }
+        if (validator == null) return null;
+        if (value == null) return validator!(null);
+        return validator!(value);
+      },
       minLines: minLines,
-      maxLines: maxLines,
+      maxLines: obscureText ? 1 : maxLines,
     );
+  }
+}
+
+T convertStringToType<T>(String value) {
+  if (T == int || T is int) {
+    return int.parse(value) as T;
+  } else if (T == double || T is double) {
+    return double.parse(value) as T;
+  } else if (T == String || T is String) {
+    return value as T;
+  } else {
+    throw ArgumentError("Unsupported type");
   }
 }

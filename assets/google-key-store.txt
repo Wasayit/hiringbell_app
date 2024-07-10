@@ -1,0 +1,32 @@
+keytool -genkey -v -keystore C:\ws\flutter\hiringbell_app\assets\google-store.keystore -keyalg RSA -keysize 2048 -validity 10000 -alias google-store
+Enter keystore password: hBottomHalf@00_123
+
+Re-enter new password: hBottomHalf@00_123
+
+What is your first and last name?
+  [Unknown]:  hiring bell
+What is the name of your organizational unit?
+  [Unknown]:  bottomhalf
+What is the name of your organization?
+  [Unknown]:  bottomhalf
+What is the name of your City or Locality?
+  [Unknown]:  hyberabad
+What is the name of your State or Province?
+  [Unknown]:  telangana
+What is the two-letter country code for this unit?
+  [Unknown]:  in
+Is CN=hiring bell, OU=bottomhalf, O=bottomhalf, L=hyberabad, ST=telangana, C=in correct?
+  [no]:  yes
+
+Generating 2,048 bit RSA key pair and self-signed certificate (SHA256withRSA) with a validity of 10,000 days
+        for: CN=hiring bell, OU=bottomhalf, O=bottomhalf, L=hyberabad, ST=telangana, C=in
+[Storing C:\ws\flutter\hiringbell_app\assets\google-store.keystore]
+
+
+
+
+Step 2 :
+keytool -list -v -keystore C:\ws\flutter\hiringbell_app\assets\google-store.keystore -alias google-store
+
+
+Client id: 532816585614-8drn3d0bk4c2mbl4194k74mdffbnpvs9.apps.googleusercontent.com

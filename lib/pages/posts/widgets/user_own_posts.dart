@@ -42,7 +42,10 @@ class UserOwnPosts extends GetView<PostsController> {
                   PostHeaderCard(),
                   const RecentPostTitle(),
                 ],
-                IndexPageCard(jobPost: controller.posts.value[index], isOwnPosts: true,),
+                IndexPageCard(
+                  jobPost: controller.posts.value[index],
+                  isOwnPosts: true,
+                ),
               ],
             );
           },

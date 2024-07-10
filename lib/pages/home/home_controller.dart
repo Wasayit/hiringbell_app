@@ -108,8 +108,58 @@ class HomeController extends GetxController {
     }
   }
 
-  String getImageUrl(List<FileDetail> files) {
-    return "${http.getImageBaseUrl}${files.first.filePath}";
+  Future<bool> addLikePost(Posts myPost) async {
+    isLoading(true);
+    try {
+      http
+          .httpPost("core/userposts/addLikedPost", myPost.toJson())
+          .then((response) {
+        if (response!.isSuccess) {
+          isLoading(false);
+          myPost.isLiked = true;
+          return true;
+        } else {
+          Fluttertoast.showToast(msg: "Fail to like the current post");
+          isLoading(false);
+          return false;
+        }
+      });
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Fail to load...");
+      isLoading(false);
+      return false;
+    }
+    return false;
+  }
+
+  Future<bool> removeLikedPost(Posts myPost) async {
+    isLoading(true);
+    try {
+      http
+          .httpDelete(
+        "core/userposts/deleteLikedPost/${myPost.userPostId}",
+      )
+          .then((response) {
+        if (response!.isSuccess) {
+          isLoading(false);
+          myPost.isLiked = false;
+          return true;
+        } else {
+          Fluttertoast.showToast(msg: "Fail to delete liked post");
+          isLoading(false);
+          return false;
+        }
+      });
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Fail to load...");
+      isLoading(false);
+      return false;
+    }
+    return false;
+  }
+
+  String getImageUrl(FileDetail file) {
+    return "${http.getImageBaseUrl}${file.filePath}";
   }
 
   getBackgroundColor(String letter) {

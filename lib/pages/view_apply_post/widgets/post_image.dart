@@ -13,6 +13,7 @@ class PostImage extends GetView<ViewPostController> {
 
   Util util = Util.getInstance();
   var home = Get.put(HomeController());
+  int imageIndex = 0;
 
   _showImageOverlay(String imageUrl) {
     Navigator.of(Get.context!).push(
@@ -32,7 +33,6 @@ class PostImage extends GetView<ViewPostController> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return controller.postsDetail!.files != null &&
             controller.postsDetail!.files!.length == 1
         ? Center(
@@ -43,21 +43,26 @@ class PostImage extends GetView<ViewPostController> {
               child: InkWell(
                 onTap: () {
                   _showImageOverlay(
-                      home.getImageUrl(controller.postsDetail!.files!));
+                      home.getImageUrl(controller.postsDetail!.files![0]));
                 },
-                child: util.getCachedImage(
-                    home.getImageUrl(controller.postsDetail!.files!)),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * .30,
+                  width: MediaQuery.of(context).size.width,
+                  child: util.getCachedImage(
+                      home.getImageUrl(controller.postsDetail!.files![0])),
+                ),
               ),
             ),
           )
         : InkWell(
             onTap: () {
               _showImageOverlay(
-                  home.getImageUrl(controller.postsDetail!.files!));
+                  home.getImageUrl(controller.postsDetail!.files![imageIndex]));
             },
             child: Center(
               child: ImageCarousel(
                 images: controller.postsDetail!.files!,
+                onChanged: (index) => imageIndex = index,
               ),
             ),
           );

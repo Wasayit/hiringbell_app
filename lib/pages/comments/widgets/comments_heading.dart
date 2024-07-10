@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hiringbell/pages/comments/comments_controller.dart';
-import 'package:hiringbell/pages/comments/widgets/chat_messages.dart';
-import 'package:hiringbell/pages/comments/widgets/recording_timer.dart';
 
 class CommentsHeading extends GetView<CommentsController> {
   const CommentsHeading({super.key});

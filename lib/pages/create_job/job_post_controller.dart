@@ -6,11 +6,12 @@ import 'package:get/get.dart';
 import 'package:hiringbell/models/constants.dart';
 import 'package:hiringbell/models/country.dart';
 import 'package:hiringbell/models/currency.dart';
+import 'package:hiringbell/models/dropdown_items.dart';
 import 'package:hiringbell/models/files.dart';
 import 'package:hiringbell/models/job_type.dart';
-import 'package:hiringbell/models/key_value_items.dart';
 import 'package:hiringbell/models/post_job.dart';
-import 'package:hiringbell/pages/common/bt_single_select/form_util.dart';
+import 'package:hiringbell/models/posts.dart';
+import 'package:hiringbell/pages/common/bt_select/form_util.dart';
 import 'package:hiringbell/utilities/Util.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -41,6 +42,7 @@ class JobPostController extends GetxController {
   var isImagePicked = true.obs;
   var isFileReady = false.obs;
   var overtimeFlag = false.obs;
+  List<FileDetail> deletedFiles = [];
 
   var openFlags = [false, false, false].obs;
   var experienceFlag = false.obs;
@@ -49,22 +51,22 @@ class JobPostController extends GetxController {
   List<Currency> listCurrency = [];
   List<Country> listCountry = [];
 
-  List<KeyValuePair> listMedicalInsurance = [
-    KeyValuePair(text: 'By company', value: 1),
-    KeyValuePair(text: 'No insurance', value: 2),
+  List<DropdownItems> listMedicalInsurance = [
+    DropdownItems(text: 'By company', value: 1),
+    DropdownItems(text: 'No insurance', value: 2),
   ];
 
-  List<KeyValuePair> listVisaType = [
-    KeyValuePair(text: 'Tourist', value: 1),
-    KeyValuePair(text: 'Employment', value: 2),
+  List<DropdownItems> listVisaType = [
+    DropdownItems(text: 'Tourist', value: 1),
+    DropdownItems(text: 'Employment', value: 2),
   ];
 
-  List<int> listMinAge = List.generate(100, (i) => i + 0);
-  List<int> listMaxAge = List.generate(100, (i) => i + 0);
-  List<int> listOverTime = List.generate(100, (i) => i + 0);
-  List<int> listDailyWorkingHours = List.generate(100, (i) => i + 0);
-  List<int> listExperience = List.generate(100, (i) => i + 0);
-  List<int> listMonths = List.generate(13, (i) => i + 0);
+  List<int> listMinAge = Util.genSequence(18, 45);
+  List<int> listMaxAge = Util.genSequence(18, 45);
+  List<int> listOverTime = Util.genSequence(0, 10);
+  List<int> listDailyWorkingHours = Util.genSequence(1, 12);
+  List<int> listExperience = Util.genSequence(0, 25);
+  List<int> listMonths = Util.genSequence(0, 12);
 
   JobPost jobPost = JobPost.noArg();
   int? jobPostId_;
@@ -180,16 +182,17 @@ class JobPostController extends GetxController {
         jobPost.isSun = status;
     }
     debugPrint('days $i :=> $status');
+    debugPrint('days Monday :=> ${jobPost.isMon}');
   }
 
-  var days = <KeyValuePair>[
-    KeyValuePair(text: 'Sunday', value: 1),
-    KeyValuePair(text: 'Monday', value: 2),
-    KeyValuePair(text: 'Tuesday', value: 3),
-    KeyValuePair(text: 'Wednesday', value: 4),
-    KeyValuePair(text: 'Thursday', value: 5),
-    KeyValuePair(text: 'Friday', value: 6),
-    KeyValuePair(text: 'Saturday', value: 7),
+  var days = <DropdownItems>[
+    DropdownItems(text: 'Sunday', value: 1),
+    DropdownItems(text: 'Monday', value: 2),
+    DropdownItems(text: 'Tuesday', value: 3),
+    DropdownItems(text: 'Wednesday', value: 4),
+    DropdownItems(text: 'Thursday', value: 5),
+    DropdownItems(text: 'Friday', value: 6),
+    DropdownItems(text: 'Saturday', value: 7),
   ];
 
   Future<void> loadFormData(int userPostId) async {
@@ -227,6 +230,46 @@ class JobPostController extends GetxController {
     bool flag = formKey.currentState!.validate();
     if (!flag) {
       util.showToast("Invalid form", type: Constants.fail);
+      isSubmitted.value = false;
+      return;
+    }
+
+    jobPost.isMon ??= false;
+    jobPost.isTue ??= false;
+    jobPost.isThu ??= false;
+    jobPost.isWed ??= false;
+    jobPost.isFri ??= false;
+    jobPost.isSat ??= false;
+    jobPost.isSun ??= false;
+
+    if (jobPost.isMon! == true &&
+        jobPost.isTue! == true &&
+        jobPost.isThu! == true &&
+        jobPost.isWed! == true &&
+        jobPost.isFri! == true &&
+        jobPost.isSat! == true &&
+        jobPost.isSun! == true) {
+      util.showToast("At least one week day should be week off",
+          type: Constants.fail);
+      return;
+    } else if (jobPost.isMon! == false &&
+        jobPost.isTue! == false &&
+        jobPost.isThu! == false &&
+        jobPost.isWed! == false &&
+        jobPost.isFri! == false &&
+        jobPost.isSat! == false &&
+        jobPost.isSun! == false) {
+      util.showToast("At least one week day should be working day",
+          type: Constants.fail);
+      return;
+    }
+
+    // // just for testing
+    // return;
+
+    if (FormUtil.isEdit) {
+      updateFormData();
+      return;
     }
 
     int i = 0;
@@ -243,11 +286,6 @@ class JobPostController extends GetxController {
 
     // jobPost.fileDetail = jsonEncode(JobPost.getJsonList(files));
     jobPost.fileDetail = "[]";
-
-    if (FormUtil.isEdit) {
-      updateFormData();
-      return;
-    }
 
     http
         .upload("core/userposts/uploadUserPostsMobile", pickedImages.value,
@@ -267,13 +305,25 @@ class JobPostController extends GetxController {
   }
 
   updateFormData() {
+    Posts passingPost;
+    List<FileDetail> updatedFiles = [];
     http
-        .upload("core/userposts/updateUserPosts", pickedImages.value,
+        .upload("core/userposts/updateUserPostsMobile", pickedImages.value,
             JobPost.toJson(jobPost))
         .then((value) => {
-              if (value != null || value == "success")
+              if (value != null)
                 {
-                  Get.back(result: "Post published successfully"),
+                  updatedFiles = JobPost.convertToList(value["files"]),
+                  passingPost = Posts(
+                    files: updatedFiles, postedBy: jobPost.postedBy,
+                    shortDescription: jobPost.shortDescription,
+                    completeDescription: jobPost.completeDescription,
+                    fullName: jobPost.fullName,
+                    userPostId: jobPost.userPostId,
+                    // isLiked: jobPost.
+                  ),
+                  util.showToast('Post updated successfully'),
+                  Get.back(result: passingPost),
                 }
               else
                 {
@@ -284,23 +334,23 @@ class JobPostController extends GetxController {
             });
   }
 
-  List<KeyValuePair> categories = <KeyValuePair>[
-    KeyValuePair(text: 'Driver', value: 1),
-    KeyValuePair(text: 'Electrician', value: 2),
-    KeyValuePair(text: 'Mechanical Fitter', value: 3),
+  List<DropdownItems> categories = <DropdownItems>[
+    DropdownItems(text: 'Driver', value: 1),
+    DropdownItems(text: 'Electrician', value: 2),
+    DropdownItems(text: 'Mechanical Fitter', value: 3),
   ];
 
-  List<KeyValuePair> countries = <KeyValuePair>[
-    KeyValuePair(text: 'India', value: 1),
-    KeyValuePair(text: 'UAE', value: 2),
-    KeyValuePair(text: 'Qatar', value: 3),
+  List<DropdownItems> countries = <DropdownItems>[
+    DropdownItems(text: 'India', value: 1),
+    DropdownItems(text: 'UAE', value: 2),
+    DropdownItems(text: 'Qatar', value: 3),
   ];
 
   List<int> generateRandomNumber({int range = 50}) {
     return List.generate(range, (i) => i + 1);
   }
 
-  void onItemSelected(KeyValuePair value) {
+  void onItemSelected(DropdownItems value) {
     debugPrint("$value");
   }
 
@@ -329,38 +379,11 @@ class JobPostController extends GetxController {
     pickedImages.value.addAll(selectedFiles);
   }
 
-  removeServerImage(String? fileName) {
-    if (fileName == null) return;
-    serverImages.value.removeWhere((f) => f.filePath == fileName);
-    jobPost.files?.removeWhere((f) => f.filePath == fileName);
-  }
-
-  InputDecoration getFiledInputDecoration(String hint, {double iconSize = 20}) {
-    return InputDecoration(
-      border: const OutlineInputBorder(),
-      filled: true,
-      fillColor: Colors.white,
-      prefixIcon: Icon(
-        Icons.currency_rupee,
-        color: Colors.blueAccent,
-        size: iconSize,
-      ),
-      contentPadding: const EdgeInsets.symmetric(
-        vertical: 2,
-      ),
-      focusedBorder: const OutlineInputBorder(
-        borderSide: BorderSide(
-          color: Colors.grey,
-          width: 1.0,
-        ),
-      ),
-      enabledBorder: const OutlineInputBorder(
-        borderSide: BorderSide(
-          color: Colors.grey,
-          width: 1.0,
-        ),
-      ),
-      hintText: hint,
-    );
+  removeServerImage(FileDetail? file) {
+    if (file?.filePath == null) return;
+    serverImages.value.removeWhere((f) => f.filePath == file?.filePath);
+    jobPost.files?.removeWhere((f) => f.filePath == file?.filePath);
+    deletedFiles.add(file!);
+    util.removeCachedImage(file.filePath!);
   }
 }

@@ -1,11 +1,10 @@
-import 'dart:convert';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hiringbell/firebase_options.dart';
 import 'package:hiringbell/models/navigate.dart';
+import 'package:hiringbell/pages/common/realtime_communication/chat_stream_service.dart';
 import 'package:hiringbell/pages/create_job/job_post_page.dart';
 import 'package:hiringbell/pages/findFriends/findFriends_page.dart';
 import 'package:hiringbell/pages/home/home_page.dart';
@@ -15,6 +14,7 @@ import 'package:hiringbell/pages/posts/posts_page.dart';
 import 'package:hiringbell/pages/profile/profile_page.dart';
 import 'package:hiringbell/pages/settings/settings_page.dart';
 import 'package:hiringbell/push_notification.dart';
+import 'package:hiringbell/services/http_service.dart';
 import 'package:hiringbell/utilities/Util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -75,15 +75,12 @@ class MainApp extends StatelessWidget {
     primary: Color.fromRGBO(21, 26, 74, 1),
     // <---- I set white color here
     secondary: Color(0x44444444),
-    background: Color(0xFFFFFFFF),
     // page background default to all pages
     surface: Color(0xFFFFFFFF),
-    // page header background color
-    onBackground: Colors.black,
     error: Colors.redAccent,
     onError: Colors.redAccent,
-    onPrimary: Colors.black,
-    onSecondary: Colors.black,
+    onPrimary: Color(0xFFFFFFFF),
+    onSecondary: Color(0xFFFFFFFF),
     //  default text color
     onSurface: Color(0xFF241E30),
     brightness: Brightness.light,
@@ -93,6 +90,10 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      initialBinding: BindingsBuilder(() {
+        HttpService.getInstance();
+        Get.put(ChatStreamService());
+      }),
       debugShowCheckedModeBanner: false,
       initialRoute: Navigate.login,
       getPages: [

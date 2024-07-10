@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:hiringbell/models/constants.dart';
 import 'package:hiringbell/models/files.dart';
 import 'package:hiringbell/utilities/Util.dart';
@@ -51,6 +49,7 @@ class JobPost {
   int overseasExperience = 0;
   int localExperience = 0;
   DateTime? jobAppliedOn;
+  DateTime? jobSavedOn;
   bool? isMon;
   bool? isTue;
   bool? isThu;
@@ -66,6 +65,7 @@ class JobPost {
   String? jobTypeName;
   String? countryName;
   String? currencyName;
+  int gender = 1;
 
   JobPost.noArg();
 
@@ -81,6 +81,7 @@ class JobPost {
     required this.jobRequirementId,
     this.requiredShortDesc,
     this.completeDescription,
+    required this.gender,
     required this.jobTypeId,
     required this.clientId,
     this.agentId,
@@ -122,6 +123,7 @@ class JobPost {
     this.countryName,
     this.currencyName,
     this.jobAppliedOn,
+    this.jobSavedOn,
     this.isMon,
     this.isTue,
     this.isThu,
@@ -189,6 +191,7 @@ class JobPost {
       'jobRequirementId': data.jobRequirementId,
       'requiredShortDesc': data.requiredShortDesc,
       'completeDescription': data.completeDescription,
+      'gender': data.gender,
       'jobTypeId': data.jobTypeId,
       'clientId': data.clientId,
       'agentId': data.agentId,
@@ -246,6 +249,7 @@ class JobPost {
       jobRequirementId: json['jobRequirementId'],
       requiredShortDesc: json['requiredShortDesc'],
       completeDescription: json['completeDescription'],
+      gender: json['gender'] ?? 1,
       jobTypeId: json['jobTypeId'],
       clientId: json['clientId'] ?? 0,
       agentId: json['agentId'],
@@ -287,6 +291,7 @@ class JobPost {
       countryName: json['countryName'],
       currencyName: json['currencyName'],
       jobAppliedOn: Util.toDateTime(json['jobAppliedOn']),
+      jobSavedOn: Util.toDateTime(json['jobSavedOn']),
       isMon: json['isMon'] ?? false,
       isTue: json['isTue'] ?? false,
       isThu: json['isThu'] ?? false,

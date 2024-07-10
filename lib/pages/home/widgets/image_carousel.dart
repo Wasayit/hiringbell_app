@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hiringbell/models/files.dart';
-import 'package:hiringbell/pages/home/carousel_controller.dart';
+import 'package:hiringbell/pages/home/carousel_controller.dart' as cc;
 import 'package:hiringbell/services/http_service.dart';
 import 'package:hiringbell/utilities/Util.dart';
 
 class ImageCarousel extends StatelessWidget {
   final Util util = Util.getInstance();
+  final void Function(int)? onChanged;
 
-  ImageCarousel({super.key, required this.images});
+  ImageCarousel({super.key, required this.images, this.onChanged});
 
   List<FileDetail> images = [];
-  var controller = Get.put(CarouselController());
+  var controller = Get.put(cc.CarouselController());
   HttpService http = HttpService.getInstance();
 
   List<Widget> indicators(imagesLength, currentIndex) {
@@ -51,12 +52,16 @@ class ImageCarousel extends StatelessWidget {
             pageSnapping: true,
             onPageChanged: (index) {
               controller.updateIndicator(index);
-              debugPrint("$index");
+              debugPrint("here your index $index");
+              if (onChanged != null) {
+                onChanged!(index);
+              }
             },
             itemBuilder: (context, position) {
               return Container(
                 margin: const EdgeInsets.all(10.0),
-                child: util.getCachedImage(getImagePath(images[position].filePath)),
+                child: util
+                    .getCachedImage(getImagePath(images[position].filePath)),
               );
             },
           ),

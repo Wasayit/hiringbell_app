@@ -61,7 +61,7 @@ class Posts {
       'files': files.map((file) => FileDetail.toJson(file)).toList(),
       'profileImage': profileImage,
       'isLiked': isLiked,
-      'appliedOn': appliedOn,
+      'appliedOn': appliedOn?.toIso8601String(),
       'postedBy': postedBy,
     };
   }

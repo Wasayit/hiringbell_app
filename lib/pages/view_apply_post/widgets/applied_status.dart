@@ -8,7 +8,6 @@ class AppliedStatus extends GetView<ViewPostController> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return controller.postsDetail!.jobAppliedOn != null
         ? Container(
             decoration: BoxDecoration(

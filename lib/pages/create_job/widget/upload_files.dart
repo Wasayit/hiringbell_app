@@ -25,7 +25,7 @@ class UploadFiles extends GetView<JobPostController> {
             left: 4,
           ),
           child: Text(
-            "Post Basic Information",
+            "Upload files",
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w500,
@@ -126,7 +126,6 @@ class UploadFiles extends GetView<JobPostController> {
                                     );
                                   },
                                 ),
-                                const Spacer(),
                                 ...List.generate(
                                   controller.serverImages.value.length,
                                   (index) {
@@ -173,7 +172,7 @@ class UploadFiles extends GetView<JobPostController> {
                                             onTap: () {
                                               controller.removeServerImage(
                                                   controller.serverImages
-                                                      .value[index].filePath);
+                                                      .value[index]);
                                               Fluttertoast.showToast(
                                                   msg: "Image removed");
                                             },

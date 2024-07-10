@@ -5,18 +5,20 @@ import 'package:hiringbell/models/constants.dart';
 import 'package:hiringbell/models/posts.dart';
 import 'package:hiringbell/pages/comments/comments_page.dart';
 import 'package:hiringbell/pages/common/index_card/image_viewer.dart';
+import 'package:hiringbell/pages/create_job/job_post_page.dart';
 import 'package:hiringbell/pages/home/home_controller.dart';
 import 'package:hiringbell/pages/view_apply_post/view_apply_post_detail.dart';
 import 'package:hiringbell/utilities/Util.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:share_plus/share_plus.dart';
-import '../../create_job/job_post_edit_page.dart';
 import '../../home/widgets/image_carousel.dart';
+import 'package:like_button/like_button.dart';
 
 class IndexPageCard extends StatefulWidget {
   final Posts jobPost;
   final bool isOwnPosts;
-  const IndexPageCard({super.key, required this.jobPost, this.isOwnPosts = false});
+  const IndexPageCard(
+      {super.key, required this.jobPost, this.isOwnPosts = false});
 
   @override
   State<IndexPageCard> createState() => _IndexPageCardState();
@@ -26,7 +28,7 @@ class _IndexPageCardState extends State<IndexPageCard> {
   final Util util = Util.getInstance();
   late Posts posts;
   final controller = Get.put(HomeController());
-
+  int imageIndex = 0;
   @override
   initState() {
     super.initState();
@@ -41,6 +43,22 @@ class _IndexPageCardState extends State<IndexPageCard> {
       setState(() {
         posts = posts;
       });
+    }
+  }
+
+  void editPost(String value) async {
+    if (value == 'edit') {
+      var result = await Get.to(JobPostPage(existingPost: posts));
+
+      if (result is Posts) {
+        result.isLiked = posts.isLiked;
+        result.profileImage = posts.profileImage;
+        result.appliedOn = posts.appliedOn;
+        setState(() {
+          posts = result;
+        });
+        return;
+      }
     }
   }
 
@@ -110,20 +128,22 @@ class _IndexPageCardState extends State<IndexPageCard> {
                       )
                     ],
                   )
-                : PopupMenuButton<String>(
-                    icon: const Icon(Icons.more_vert),
-                    itemBuilder: (context) => [
-                      const PopupMenuItem(
-                        value: 'edit',
-                        child: Row(
-                          children: [
-                            Icon(Icons.edit),
-                            SizedBox(width: 5),
-                            Text('Edit')
-                          ],
-                        ),
-                      ),
-                      /*const PopupMenuItem(
+                : !widget.isOwnPosts
+                    ? const SizedBox()
+                    : PopupMenuButton<String>(
+                        icon: const Icon(Icons.more_vert),
+                        itemBuilder: (context) => [
+                          const PopupMenuItem(
+                            value: 'edit',
+                            child: Row(
+                              children: [
+                                Icon(Icons.edit),
+                                SizedBox(width: 5),
+                                Text('Edit')
+                              ],
+                            ),
+                          ),
+                          /*const PopupMenuItem(
                         value: 'delete',
                         child: Row(
                           children: [
@@ -133,15 +153,9 @@ class _IndexPageCardState extends State<IndexPageCard> {
                           ],
                         ),
                       ),*/
-                    ],
-                    onSelected: (String value) {
-                      if (value == 'edit') {
-                        Get.to(
-                          JobPostEditPage(existingPost: posts),
-                        );
-                      }
-                    },
-                  ),
+                        ],
+                        onSelected: editPost,
+                      ),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -202,13 +216,13 @@ class _IndexPageCardState extends State<IndexPageCard> {
                 ),
                 child: InkWell(
                   onTap: () {
-                    _showImageOverlay(controller.getImageUrl(posts.files));
+                    _showImageOverlay(controller.getImageUrl(posts.files[0]));
                   },
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height * .30,
                     width: MediaQuery.of(context).size.width,
                     child: util
-                        .getCachedImage(controller.getImageUrl(posts.files)),
+                        .getCachedImage(controller.getImageUrl(posts.files[0])),
                   ),
                 ),
               ),
@@ -216,11 +230,13 @@ class _IndexPageCardState extends State<IndexPageCard> {
           else
             InkWell(
               onTap: () {
-                _showImageOverlay(controller.getImageUrl(posts.files));
+                _showImageOverlay(
+                    controller.getImageUrl(posts.files[imageIndex]));
               },
               child: Center(
                 child: ImageCarousel(
                   images: posts.files,
+                  onChanged: (index) => imageIndex = index,
                 ),
               ),
             ),
@@ -261,6 +277,36 @@ class _IndexPageCardState extends State<IndexPageCard> {
                     ],
                   ),
                 ),*/
+                if (util.getUserDetail().userId != posts.postedBy)
+                  LikeButton(
+                    onTap: (isLiked) async {
+                      bool success = await (isLiked
+                          ? controller.removeLikedPost(posts)
+                          : controller.addLikePost(posts));
+                      if (!success) return !isLiked;
+                      posts.isLiked = isLiked;
+                      return isLiked;
+                    },
+                    isLiked: posts.isLiked,
+                    likeCount: 0,
+                    countPostion: CountPostion.bottom,
+                    countBuilder: (likeCount, isLiked, text) {
+                      return Transform.translate(
+                        offset: const Offset(0, -5),
+                        child: Text(isLiked ? "Liked" : "Like",
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: Colors.black54)),
+                      );
+                    },
+                    likeBuilder: (isTapped) {
+                      return Icon(
+                        Icons.thumb_up,
+                        size: 18,
+                        color: isTapped ? Colors.blue : Colors.grey,
+                      );
+                    },
+                  ),
                 IconButton(
                   onPressed: () async {
                     await Share.share("https://www.hiringbell.com");
@@ -309,7 +355,9 @@ class _IndexPageCardState extends State<IndexPageCard> {
                 ),
                 IconButton(
                   onPressed: applyForJob,
-                  icon: posts.appliedOn != null || widget.isOwnPosts
+                  icon: posts.appliedOn != null ||
+                          widget.isOwnPosts ||
+                          util.getUserDetail().userId == posts.postedBy
                       ? const Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [

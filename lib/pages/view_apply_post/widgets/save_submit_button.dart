@@ -18,12 +18,19 @@ class SaveSubmitButton extends GetView<ViewPostController> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          BtButton.fullWidth(
-            title: "Cancel",
-            addHGap: 5,
-            onClick: () {
-              Get.back();
-            },
+          Obx(
+            () => Visibility(
+              visible: !controller.jobSavedStatusTrigger.value,
+              child: BtButton.fullWidthSubmit(
+                bgColor: Colors.grey,
+                title: controller.isJobSaving.value ? "Saving..." : "Save",
+                addHGap: 5,
+                onClick: () {
+                  debugPrint("Saved");
+                  controller.saveForJob();
+                },
+              ),
+            ),
           ),
           Obx(
             () => BtButton.fullWidthSubmit(

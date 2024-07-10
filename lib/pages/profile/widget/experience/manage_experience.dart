@@ -1,0 +1,295 @@
+import 'dart:ffi';
+
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:hiringbell/models/constants.dart';
+import 'package:hiringbell/models/experience.dart';
+import 'package:hiringbell/pages/common/child_layout/child_layout.dart';
+import 'package:hiringbell/pages/common/search_field/search_field.dart';
+import 'package:hiringbell/pages/common/textarea/bt_textarea.dart';
+import 'package:hiringbell/pages/profile/profile_controller.dart';
+import 'package:hiringbell/utilities/Util.dart';
+
+class ManageExperience extends GetView<ProfileController> {
+  final Experience experience;
+  final bool editMode;
+
+  const ManageExperience({
+    super.key,
+    required this.experience,
+    this.editMode = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ChildLayout(
+      title: "Manage experience",
+      child: SingleChildScrollView(
+        child: Form(
+          key: controller.experienceFormKey,
+          child: Column(
+            children: [
+              Padding(
+                padding: Util.getPagePadding(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Write few words about yourself",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: Constants.fontSize * 1.2,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 6,
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: const Text(
+                        "Craft a brief and professional self-introduction highlighting your work, "
+                        "skills, and strengths to effectively communicate your capabilities to others.",
+                        style: TextStyle(
+                          fontSize: Constants.fontSize * .85,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                      maxLines: null,
+                      controller: controller.roleNameController,
+                      decoration: Util.getTextFieldDecoration(
+                        placeholder: 'Role name',
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Role name is required";
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {},
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                      maxLines: null,
+                      controller: controller.companyNameController,
+                      decoration: Util.getTextFieldDecoration(
+                        placeholder: 'Company name',
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Company name is required";
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {},
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Obx(
+                      () => Row(
+                        children: [
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {
+                                controller.onDateSelected(true);
+                              },
+                              child: TextFormField(
+                                maxLines: null,
+                                enabled: false,
+                                controller: controller.dojController.value,
+                                decoration: Util.getTextFieldDecoration(
+                                  placeholder: 'Date of joining',
+                                  trailingIcon: IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(
+                                      Icons.calendar_today,
+                                      size: 16,
+                                    ),
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "DOJ is required";
+                                  }
+                                  return null;
+                                },
+                                onChanged: (value) {},
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {
+                                controller.onDateSelected(false);
+                              },
+                              child: TextFormField(
+                                maxLines: null,
+                                enabled: false,
+                                controller: controller.dolController.value,
+                                decoration: Util.getTextFieldDecoration(
+                                  placeholder: 'Date of leaving',
+                                  trailingIcon: IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(
+                                      Icons.calendar_today,
+                                      size: 16,
+                                    ),
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "DOL is required";
+                                  }
+                                  return null;
+                                },
+                                onChanged: (value) {},
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Obx(
+                      () => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Your present/last work location",
+                                style: Util.getLabelHeaderStyle(),
+                              ),
+                              SearchField.iconSearch(
+                                searchUrl: "core/filter/getCountries",
+                                searchIcon: const Icon(Icons.add),
+                                onSelected:
+                                    controller.handledSelectedWorkLocation,
+                                ratio: 1,
+                              ),
+                            ],
+                          ),
+                          if (controller.workLocationCountryName.value.isEmpty)
+                            const Text(
+                              "Click + icon add your work location (i.e. country)",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: Constants.fontSize * .9,
+                              ),
+                            )
+                          else
+                            ListTile(
+                              leading: const Icon(Icons.flag),
+                              title: Text(
+                                  controller.workLocationCountryName.value),
+                              subtitle: const Text(
+                                  "Above is your selected work location"),
+                            ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    BtTextarea(
+                      textController: controller.roleDescriptionController,
+                      onValidate: (value) {
+                        if (value!.isEmpty) {
+                          return "Please enter text";
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: Constants.contentVSpace * 2,
+                    ),
+                    Obx(
+                      () => Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if(editMode && controller.profileDetail!.experience!.experienceId == 0) {
+                              controller.util.showToast("Experience page is not loaded correctly.");
+                              return;
+                            }
+                            controller.updateExperience();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                          ),
+                          child: controller.isSubmitted.value
+                              ? SizedBox(
+                                  width: MediaQuery.of(context).size.width * .4,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 15,
+                                      ),
+                                      Text(
+                                        "Updating...",
+                                        style: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .surface,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : SizedBox(
+                                  width: MediaQuery.of(context).size.width * .4,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.edit_note,
+                                        color: Colors.white,
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        "Update detail",
+                                        style: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .surface,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
