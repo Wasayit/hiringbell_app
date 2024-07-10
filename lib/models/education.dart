@@ -1,16 +1,34 @@
 class Education {
   int educationId;
-  String educationName;
+  String universityOrBoardName;
+  int educationTypeId;
+  String collageOrSchoolName;
+  int yearOfPassout;
+  int duration;
+  String country;
+  String? educationName;
 
   Education({
     required this.educationId,
-    required this.educationName,
+    required this.educationTypeId,
+    required this.universityOrBoardName,
+    required this.collageOrSchoolName,
+    required this.yearOfPassout,
+    required this.duration,
+    required this.country,
+    this.educationName
   });
 
   factory Education.fromJson(Map<String, dynamic> json) {
     return Education(
       educationId: json['educationId'],
-      educationName: json['educationName'],
+      educationTypeId: json['educationTypeId'],
+      universityOrBoardName: json['universityOrBoardName'],
+      collageOrSchoolName: json['collageOrSchoolName'],
+      yearOfPassout: json['yearOfPassout'],
+      duration: json['duration'],
+      country: json['country'],
+      educationName: json['educationName']
     );
   }
 
@@ -18,14 +36,20 @@ class Education {
   Map<String, dynamic> toJson() {
     return {
       'educationId': educationId,
-      'educationName': educationName,
+      'educationTypeId': educationTypeId,
+      'universityOrBoardName': universityOrBoardName,
+      'collageOrSchoolName': collageOrSchoolName,
+      'yearOfPassout': yearOfPassout,
+      'duration': duration,
+      'country': country,
+      'educationName': educationName
     };
   }
 
-  @override
-  String toString() {
-    return educationName;
-  }
+  // @override
+  // String toString() {
+  //   return educationName;
+  // }
 
   static List<Education> fromJsonList(List<dynamic> jsonList) {
     return jsonList.map((json) => Education.fromJson(json)).toList();

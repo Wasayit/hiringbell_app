@@ -82,31 +82,30 @@ class Education extends GetView<ProfileController> {
                           ),
                         ],
                       )
-                    : const Column(
+                    : Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            "Biju Patnayak University of Technology, Odisha",
-                            style: TextStyle(
+                            controller.profileDetail!.education!.collageOrSchoolName,
+                            style: const TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: Constants.fontSize * 1.3,
                             ),
                           ),
                           Text(
-                              "BTech - Bachelor of Technology, Computer Science"),
-                          Text("2006 - 2013"),
-                          SizedBox(
+                            controller.profileDetail!.education!.educationName!),
+                          Text("${controller.profileDetail!.education!.yearOfPassout - controller.profileDetail!.education!.duration} - ${controller.profileDetail!.education!.yearOfPassout}"),
+                          const SizedBox(
                             height: Constants.contentVSpace,
                           ),
                           Wrap(
                             children: [
-                              Icon(Icons.diamond),
-                              SizedBox(
+                              const Icon(Icons.flag),
+                              const SizedBox(
                                 width: Constants.contentHSpace,
                               ),
-                              Text(
-                                  "Solution Architecture and Artificial Intelligence (AI)"),
+                              Text(controller.profileDetail!.education!.country),
                             ],
                           ),
                         ],

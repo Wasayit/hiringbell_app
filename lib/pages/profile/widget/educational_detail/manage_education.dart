@@ -57,15 +57,48 @@ class ManageEducation extends GetView<ProfileController> {
                     const SizedBox(
                       height: 10,
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        BtDropdown(
+                          onChanged: (item) {
+                            controller.educationTypeId = item.value;
+                          },
+                          items: [
+                            DropdownItems(value: 1, text: "10th standard"),
+                            DropdownItems(value: 2, text: "12th standard"),
+                            DropdownItems(value: 3, text: "Graduation"),
+                          ],
+                          label: "Education Type",
+                        ),
+                      ],
+                    ),
+                    // TextFormField(
+                    //   maxLines: null,
+                    //   controller: controller.educationTypeController,
+                    //   decoration: Util.getTextFieldDecoration(
+                    //     placeholder: 'Education type e.g. Graduation',
+                    //   ),
+                    //   validator: (value) {
+                    //     if (value!.isEmpty) {
+                    //       return "Education type is required";
+                    //     }
+                    //     return null;
+                    //   },
+                    //   onChanged: (value) {},
+                    // ),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     TextFormField(
                       maxLines: null,
-                      controller: controller.educationTypeController,
+                      controller: controller.collegeSchollController,
                       decoration: Util.getTextFieldDecoration(
-                        placeholder: 'Education type e.g. Graduation',
+                        placeholder: 'College/School Name',
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return "Education type is required";
+                          return "College/School is required";
                         }
                         return null;
                       },
@@ -76,7 +109,7 @@ class ManageEducation extends GetView<ProfileController> {
                     ),
                     TextFormField(
                       maxLines: null,
-                      controller: controller.universitySchoolController,
+                      controller: controller.universityBoardController,
                       decoration: Util.getTextFieldDecoration(
                         placeholder: 'University/Board Name',
                       ),
@@ -97,7 +130,7 @@ class ManageEducation extends GetView<ProfileController> {
                           Expanded(
                             child: InkWell(
                               onTap: () {
-                                controller.onDateSelected(true);
+                                controller.onSelectPassOutYear();
                               },
                               child: TextFormField(
                                 maxLines: null,
@@ -137,9 +170,10 @@ class ManageEducation extends GetView<ProfileController> {
                             controller.duration = item.value;
                           },
                           items: [
-                            DropdownItems(value: 1, text: "10th standard"),
-                            DropdownItems(value: 2, text: "12th standard"),
-                            DropdownItems(value: 3, text: "Graduation"),
+                            DropdownItems(value: 1, text: "1 year"),
+                            DropdownItems(value: 2, text: "2 years"),
+                            DropdownItems(value: 3, text: "3 years"),
+                            DropdownItems(value: 4, text: "4 years")
                           ],
                           label: "Duration",
                         ),
@@ -156,7 +190,7 @@ class ManageEducation extends GetView<ProfileController> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Your present/last work location",
+                                "Education country",
                                 style: Util.getLabelHeaderStyle(),
                               ),
                               SearchField.iconSearch(
@@ -170,7 +204,7 @@ class ManageEducation extends GetView<ProfileController> {
                           ),
                           if (controller.universityBoardCountry.value.isEmpty)
                             const Text(
-                              "Click + icon add your work location (i.e. country)",
+                              "Click + icon add your education country",
                               style: TextStyle(
                                 color: Colors.grey,
                                 fontSize: Constants.fontSize * .9,
@@ -202,7 +236,12 @@ class ManageEducation extends GetView<ProfileController> {
                                   "Experience page is not loaded correctly.");
                               return;
                             }
-                            controller.addUpdateEducationalDetail();
+
+                            if (editMode) {
+                              controller.addEducationDetail();
+                            } else {
+                              controller.updateEducationDetail();
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:

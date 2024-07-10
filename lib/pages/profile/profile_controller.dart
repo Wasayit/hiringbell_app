@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hiringbell/models/api_response.dart';
@@ -254,10 +256,10 @@ class ProfileController extends GetxController {
         experienceFlag.value = true;
       }
 
-      profileDetail!.education = Education(
-        educationName: "sadf",
-        educationId: 0,
-      );
+      var education = result["Education"] as List<dynamic>;
+      if (education.isNotEmpty) {
+        profileDetail!.education = Education.fromJson(education[0]);
+      }
 
       jobTitleController.text = profileDetail!.userProfessionalDetail!.title!;
       jobShortDescController.text =
@@ -289,10 +291,21 @@ class ProfileController extends GetxController {
     if (selectedDate != null) {
       String formattedDate = DateFormat('dd MMM, yyy').format(selectedDate);
       if (isDOJ) {
-        dojController.value.text = formattedDate.toString();
+        doaController.value.text = formattedDate.toString();
       } else {
         dolController.value.text = formattedDate.toString();
       }
+    }
+  }
+
+  Future<void> onSelectPassOutYear() async {
+    DateTime? selectedDate = await showDatePicker(
+        context: context!,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1960),
+        lastDate: DateTime(2030));
+    if (selectedDate != null) {
+      doaController.value.text = selectedDate.year.toString();
     }
   }
 
@@ -343,12 +356,14 @@ class ProfileController extends GetxController {
   //------------------------- education section --------------------
 
   var educationTypeController = TextEditingController();
-  var universitySchoolController = TextEditingController();
+  var universityBoardController = TextEditingController();
+  var collegeSchollController = TextEditingController();
   var doaController = TextEditingController().obs;
   var universityBoardCountry = "".obs;
   final educationForm = GlobalKey<FormState>();
 
   int duration = 0;
+  int educationTypeId = 0;
 
   void addEducation() {
     Get.to(
@@ -366,6 +381,13 @@ class ProfileController extends GetxController {
   }
 
   void editEducation() {
+    universityBoardController.text = profileDetail!.education!.universityOrBoardName;
+    educationTypeId = profileDetail!.education!.educationTypeId;
+    collegeSchollController.text = profileDetail!.education!.collageOrSchoolName;
+    duration = profileDetail!.education!.duration;
+    universityBoardCountry.value = profileDetail!.education!.country;
+    doaController.value.text = profileDetail!.education!.yearOfPassout.toString();
+
     Get.to(
       ManageEducation(
         education: profileDetail!.education!,
@@ -385,22 +407,49 @@ class ProfileController extends GetxController {
     universityBoardCountry.value = item.text;
   }
 
-  Future<void> addUpdateEducationalDetail() async {
+  Future<void> addEducationDetail() async {
+    var endpoint = "core/user/addEducationalDetail";
+    saveEducationalDetail(endpoint, 0);
+  }
+
+  Future<void> updateEducationDetail() async {
+    var endpoint = "core/user/updateEducationalDetail";
+    int educationId = profileDetail!.education!.educationId;
+    if (educationId <= 0) {
+      util.showToast("Invalid education detail selected", type: Constants.fail);
+      return;
+    }
+      
+    saveEducationalDetail(endpoint, educationId);
+  }
+
+  Future<void> saveEducationalDetail(String endpoint, int educationId) async {
     isSubmitted.value = true;
 
     try {
       bool status = educationForm.currentState!.validate();
       if (status) {
         var result =
-            await http.httpPost("core/user/addUpdateEducationalDetail", {
-              "educationId": 0,
-              "educationTypeId": educationTypeController.value.text,
-              "universityOrBoardName": universitySchoolController.value.text,
-              "collageOrSchoolName": educationTypeController.value.text,
+            await http.httpPost(endpoint, {
+              "educationId": educationId,
+              "educationTypeId": educationTypeId,
+              "universityOrBoardName": universityBoardController.value.text,
+              "collageOrSchoolName": collegeSchollController.value.text,
               "yearOfPassout": doaController.value.text,
               "duration": duration,
               "country": universityBoardCountry.value,
             });
+
+        if (result == null || result.responseBody == null) {
+          util.showToast("Fail to update educational data", type: Constants.fail);
+          isSubmitted.value = false;
+          return;
+        }
+
+        profileDetail!.education = Education.fromJson(result.responseBody);
+        util.showToast("Educational detail added/updated successfully");
+        isReady.value = false;
+        isSubmitted.value = false;
       } else {
         util.showToast("Please mandatory fields", type: Constants.fail);
       }
