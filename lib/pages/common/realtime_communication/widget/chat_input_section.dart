@@ -13,11 +13,17 @@ class ChatInputSection extends GetView<ChatStreamService> {
     required this.senderId,
     required this.recipientId,
     this.isGroupChat = false,
-    this.groupId = ""
+    this.groupId = "",
   });
 
   @override
   Widget build(BuildContext context) {
+    controller.senderId = senderId;
+    controller.recipientId = recipientId;
+    controller.isGroupChat = isGroupChat;
+    controller.groupId = groupId;
+    controller.validate();
+
     return Material(
       elevation: 10.0,
       child: Row(
@@ -65,7 +71,10 @@ class ChatInputSection extends GetView<ChatStreamService> {
                             const SizedBox(
                               width: 10,
                             ),
-                            Image.asset("assets/loading.gif", width: 40,),
+                            Image.asset(
+                              "assets/loading.gif",
+                              width: 40,
+                            ),
                           ],
                         ),
                       )
@@ -78,14 +87,12 @@ class ChatInputSection extends GetView<ChatStreamService> {
                             hintText: 'Type a message (currently disable)',
                             border: InputBorder.none,
                           ),
-                          onChanged: (text) { },
+                          onChanged: (text) {},
                         ),
                       ),
                     IconButton(
                       icon: const Icon(Icons.send),
-                      onPressed: () {
-                        controller.send(groupId, senderId, recipientId, isGroupChat);
-                      },
+                      onPressed: controller.send,
                     ),
                   ],
                 ),

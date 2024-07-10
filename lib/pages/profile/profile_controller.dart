@@ -267,8 +267,8 @@ class ProfileController extends GetxController {
       countryName.value =
           profileDetail!.userProfessionalDetail!.presentWorkLocation!;
 
-      if (profileDetail!
-          .userProfessionalDetail!.completeDescription!.isNotEmpty) {
+      if (profileDetail!.userProfessionalDetail!.completeDescription != null &&
+          profileDetail!.userProfessionalDetail!.completeDescription!.isNotEmpty) {
         aboutMeFlag.value = true;
         aboutMeController.text =
             profileDetail!.userProfessionalDetail!.completeDescription!;

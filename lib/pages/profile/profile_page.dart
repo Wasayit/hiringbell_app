@@ -33,7 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return PopScope(
       canPop: false,
       onPopInvoked: (bool didPop) async {
-        if(!didPop) {
+        if (!didPop) {
           debugPrint("Loaded -------------------------------------");
           Navigator.of(context).pop();
         }
@@ -51,11 +51,13 @@ class _ProfilePageState extends State<ProfilePage> {
                       AboutMe(),
                       WorkExperience(),
                       Education(),
-                      Skills(),
-                      Interests(),
+                      /* Skills(),
+                      Interests(),*/
                     ],
                   )
-                : const CircularProgressIndicator(),
+                : const Center(
+                    child: CircularProgressIndicator(),
+                  ),
           ),
         ),
       ),

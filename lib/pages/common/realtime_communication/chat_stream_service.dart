@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_sound_record/flutter_sound_record.dart';
@@ -17,6 +18,11 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 
 class ChatStreamService extends GetxService {
+  String groupId = Constants.empty;
+  String senderId = Constants.empty;
+  String recipientId = Constants.empty;
+  bool isGroupChat = false;
+
   bool _isConnected = false;
   late String wsBaseUrl;
   StompClient? client;
@@ -40,6 +46,20 @@ class ChatStreamService extends GetxService {
   Amplitude? amplitude;
   int recordDuration = 0;
   var fileDuration = "00:00".obs;
+
+  void validate() {
+    if (isGroupChat && groupId.isEmpty) {
+      util.showToast("Invalid group id.", type: Constants.fail);
+    }
+
+    if (senderId.isEmpty) {
+      util.showToast("Sender id should not be null", type: Constants.fail);
+    }
+
+    if (recipientId.isEmpty) {
+      util.showToast("Recipient id should not be null", type: Constants.fail);
+    }
+  }
 
   @override
   void onInit() {
@@ -85,7 +105,8 @@ class ChatStreamService extends GetxService {
 
   void onConnectCallback(StompFrame frame) {
     if (frame.command == "CONNECTED") {
-      debugPrint("------------------------Connected----------------------------------");
+      debugPrint(
+          "------------------------Connected----------------------------------");
       _isConnected = true;
       client?.subscribe(
         destination: "/user/istiyaq.mi9_gmail/queue/messages",
@@ -154,12 +175,12 @@ class ChatStreamService extends GetxService {
             if (body["senderId"] != userId) {
               chatMessage.value.add(
                 RequestMessage(
-                    content: body["content"],
-                    type: RequestMessage.getMessageType(body["type"]),
-                    chatId: body["chatId"],
-                    senderId: body["senderId"],
-                    recipientId: body["recipientId"],
-                    timestamp: DateTime.parse(body["timestamp"]),
+                  content: body["content"],
+                  type: RequestMessage.getMessageType(body["type"]),
+                  chatId: body["chatId"],
+                  senderId: body["senderId"],
+                  recipientId: body["recipientId"],
+                  timestamp: DateTime.parse(body["timestamp"]),
                 ),
               );
             }
@@ -175,30 +196,71 @@ class ChatStreamService extends GetxService {
     channelSubscription(unsubscribeHeaders: {});
   }
 
-  void send(
-      String groupId, String senderId, String recipientId, bool isGroupChat) {
+  void send() {
+    var request = {
+      'type': MessageType.audio.value,
+      'chatId': groupId,
+      'senderId': senderId,
+      'recipientId': recipientId,
+    };
+
     if (isGroupChat) {
-      postOnGroup(groupId, senderId, recipientId);
+      request["content"] = messageController.text;
+      postOnGroup(
+        request: request,
+      );
     } else {
+      request["content"] = messageController.text;
       sendTextMessage();
     }
   }
 
-  void postOnGroup(String groupId, String senderId, String recipientId) {
-    var timestamp = Jiffy.parseFromDateTime(DateTime.now()).format(pattern: "yyyy-MM-dd HH:mm:ss");
-    var body = {
-      'content': messageController.text,
-      'type': 2,
+  void sendImageAudioOrVideo(Uint8List byteArrayData) {
+    var request = {
+      'type': MessageType.audio.value,
       'chatId': groupId,
       'senderId': senderId,
       'recipientId': recipientId,
-      'timestamp': timestamp
     };
+
+    if (isGroupChat) {
+      // request["binaryEncodedData"] = base64Encode(byteArrayData);
+      postOnGroup(
+        byteArrayData: byteArrayData,
+        request: request,
+      );
+    } else {
+      // request["binaryEncodedData"] = base64Encode(byteArrayData);;
+      sendTextMessage();
+    }
+  }
+
+  Future<Uint8List?> getBinaryDataForAudioImageOrVideoData() async {
+    try {
+      File file = File(recordedFilePath);
+      var byteArray = await file.readAsBytes();
+      return byteArray;
+    } catch (e) {
+      util.showToast("Fail to read audio data", type: Constants.fail);
+      return null;
+    }
+  }
+
+  void postOnGroup(
+      {required Map<String, Object> request, Uint8List? byteArrayData}) {
+    var timestamp = Jiffy.parseFromDateTime(DateTime.now())
+        .format(pattern: "yyyy-MM-dd HH:mm:ss");
+
+    request['timestamp'] = timestamp;
 
     if (_isConnected) {
       client?.send(
         destination: "/app/comment",
-        body: json.encode(body),
+        body: json.encode(request),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        binaryBody: byteArrayData,
       );
 
       chatMessage.value.add(
@@ -221,14 +283,6 @@ class ChatStreamService extends GetxService {
   Future<String> getTemporaryDirPath() async {
     Directory tempDir = await getTemporaryDirectory();
     return tempDir.path;
-  }
-
-  Future<void> stopRecording() async {
-    debugPrint("Stop recording...");
-    isRecording.value = false;
-    await recorder!.stop();
-    isRecording.value = false;
-    sendAudioMessage();
   }
 
   Future playRecording() async {
@@ -265,12 +319,24 @@ class ChatStreamService extends GetxService {
     try {
       recorder = FlutterSoundRecord();
       await recorder!.start(
-          bitRate: 128000,
-          samplingRate: 44100,
-          encoder: AudioEncoder.AAC,
-          path: recordedFilePath);
+        bitRate: 128000,
+        samplingRate: 44100,
+        encoder: AudioEncoder.AAC,
+        path: recordedFilePath,
+      );
     } catch (e) {
       isRecording.value = false;
+    }
+  }
+
+  Future<void> stopRecording() async {
+    debugPrint("Stop recording...");
+    isRecording.value = false;
+    await recorder!.stop();
+    isRecording.value = false;
+    var result = await getBinaryDataForAudioImageOrVideoData();
+    if (result != null) {
+      sendImageAudioOrVideo(result);
     }
   }
 

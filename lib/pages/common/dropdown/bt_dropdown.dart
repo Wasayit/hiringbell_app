@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:hiringbell/models/dropdown_items.dart';
+import 'package:hiringbell/pages/comments/model/message_type.dart';
 
 class BtDropdown extends StatefulWidget {
   final bool materialStyle;
   final Function(DropdownItems<int>)? onChanged;
   final List<DropdownItems<int>> items;
+  final int selectedItemId;
   final String label;
 
   const BtDropdown({
     super.key,
     required this.onChanged,
     required this.items,
+    required this.selectedItemId,
     required this.label,
   })  : assert(true),
         materialStyle = false;
@@ -19,6 +22,7 @@ class BtDropdown extends StatefulWidget {
     super.key,
     required this.onChanged,
     required this.items,
+    required this.selectedItemId,
     required this.label,
   })  : assert(true),
         materialStyle = true;
@@ -36,6 +40,8 @@ class _BtDropdownState extends State<BtDropdown> {
     return DropdownMenu<DropdownItems<int>>(
       controller: iconController,
       enableFilter: true,
+      width: MediaQuery.of(context).size.width * .9,
+      initialSelection: widget.items.where((x) => x.value == widget.selectedItemId).first,
       requestFocusOnTap: true,
       leadingIcon: const Icon(Icons.search),
       label: Text(widget.label),
@@ -64,8 +70,9 @@ class _BtDropdownState extends State<BtDropdown> {
 
   Widget getFullDropdown() {
     return DropdownMenu<DropdownItems<int>>(
-      initialSelection: widget.items.first,
       controller: colorController,
+      width: MediaQuery.of(context).size.width * .9,
+      initialSelection: widget.items.where((x) => x.value == widget.selectedItemId).first,
       requestFocusOnTap: true,
       label: const Text('Color'),
       onSelected: (DropdownItems<int>? x) {
