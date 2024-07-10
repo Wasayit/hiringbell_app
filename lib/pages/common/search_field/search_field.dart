@@ -121,6 +121,7 @@ class SearchField extends StatelessWidget {
   }
 
   void _showFullScreenBottomSheet(BuildContext context) {
+    FocusScope.of(context).unfocus();
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,

@@ -61,6 +61,7 @@ dependencies:
   share_plus: ^9.0.0
   stomp_dart_client: ^2.0.0
   dotted_border: ^2.1.0
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:

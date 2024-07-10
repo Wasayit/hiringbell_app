@@ -31,10 +31,16 @@ class AboutMe extends GetView<ProfileController> {
                       fontSize: Constants.fontSize * 1.5,
                     ),
                   ),
-                  if (!controller.aboutMeFlag.value)
+                  if (controller.aboutMeFlag.value)
                     IconButton(
-                      onPressed: () {
-                        Get.to(const ManageAboutMe());
+                      onPressed: () async {
+                        await Get.to(const ManageAboutMe())?.then(
+                          (_) => {
+                            if(!controller.isReady.value) {
+                              controller.reloadPage()
+                            }
+                          },
+                        );
                       },
                       icon: const Icon(
                         Constants.icon,
@@ -48,6 +54,13 @@ class AboutMe extends GetView<ProfileController> {
                 height: Constants.contentHSpace * 1.5,
               ),
               if (controller.aboutMeFlag.value)
+                Text(
+                  controller.profileDetail!.userProfessionalDetail!
+                      .completeDescription!,
+                  maxLines: 4,
+                  overflow: TextOverflow.ellipsis,
+                )
+              else
                 BtDashedContainer(
                   content: "Add something your about self",
                   child: ElevatedButton(
@@ -56,13 +69,6 @@ class AboutMe extends GetView<ProfileController> {
                     },
                     child: const Text("Click to Add"),
                   ),
-                )
-              else
-                Text(
-                  controller.profileDetail!.userProfessionalDetail!
-                      .completeDescription!,
-                  maxLines: 4,
-                  overflow: TextOverflow.ellipsis,
                 )
             ],
           ),
